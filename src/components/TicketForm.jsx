@@ -128,36 +128,45 @@ export default function TicketForm({ event }) {
       <div className="mb-6">
         <div className="flex items-center gap-2 mb-3">
           <UsersIcon className="w-4 h-4 text-gold" />
-          <label className="text-xs tracking-[0.15em] uppercase text-charcoal-light font-sans font-medium">
+          <span className="text-xs tracking-[0.12em] uppercase text-charcoal-light font-sans font-medium">
             Your Information (Ticket Holder 1)
-          </label>
+          </span>
         </div>
         <div className="grid grid-cols-2 gap-3 mb-3">
+          <div>
+            <label htmlFor="buyer-first" className="block text-xs text-charcoal-light mb-1">First Name</label>
+            <input
+              id="buyer-first"
+              type="text"
+              value={buyer.firstName}
+              onChange={(e) => setBuyer({ ...buyer, firstName: e.target.value })}
+              className="w-full px-4 py-2.5 rounded-lg border border-gold/15 bg-cream/50 text-charcoal text-sm focus:outline-none focus:border-gold/40 focus:ring-1 focus:ring-gold/20 transition-colors"
+              required
+            />
+          </div>
+          <div>
+            <label htmlFor="buyer-last" className="block text-xs text-charcoal-light mb-1">Last Name</label>
+            <input
+              id="buyer-last"
+              type="text"
+              value={buyer.lastName}
+              onChange={(e) => setBuyer({ ...buyer, lastName: e.target.value })}
+              className="w-full px-4 py-2.5 rounded-lg border border-gold/15 bg-cream/50 text-charcoal text-sm focus:outline-none focus:border-gold/40 focus:ring-1 focus:ring-gold/20 transition-colors"
+              required
+            />
+          </div>
+        </div>
+        <div>
+          <label htmlFor="buyer-email" className="block text-xs text-charcoal-light mb-1">Email Address</label>
           <input
-            type="text"
-            placeholder="First Name"
-            value={buyer.firstName}
-            onChange={(e) => setBuyer({ ...buyer, firstName: e.target.value })}
-            className="px-4 py-2.5 rounded-lg border border-gold/15 bg-cream/50 text-charcoal text-sm placeholder:text-charcoal-light/50 focus:outline-none focus:border-gold/40 focus:ring-1 focus:ring-gold/20 transition-colors"
-            required
-          />
-          <input
-            type="text"
-            placeholder="Last Name"
-            value={buyer.lastName}
-            onChange={(e) => setBuyer({ ...buyer, lastName: e.target.value })}
-            className="px-4 py-2.5 rounded-lg border border-gold/15 bg-cream/50 text-charcoal text-sm placeholder:text-charcoal-light/50 focus:outline-none focus:border-gold/40 focus:ring-1 focus:ring-gold/20 transition-colors"
+            id="buyer-email"
+            type="email"
+            value={buyer.email}
+            onChange={(e) => setBuyer({ ...buyer, email: e.target.value })}
+            className="w-full px-4 py-2.5 rounded-lg border border-gold/15 bg-cream/50 text-charcoal text-sm focus:outline-none focus:border-gold/40 focus:ring-1 focus:ring-gold/20 transition-colors"
             required
           />
         </div>
-        <input
-          type="email"
-          placeholder="Email Address"
-          value={buyer.email}
-          onChange={(e) => setBuyer({ ...buyer, email: e.target.value })}
-          className="w-full px-4 py-2.5 rounded-lg border border-gold/15 bg-cream/50 text-charcoal text-sm placeholder:text-charcoal-light/50 focus:outline-none focus:border-gold/40 focus:ring-1 focus:ring-gold/20 transition-colors"
-          required
-        />
       </div>
 
       {/* Additional attendees */}
@@ -165,36 +174,45 @@ export default function TicketForm({ event }) {
         <div key={i} className="mb-6">
           <div className="flex items-center gap-2 mb-3">
             <UsersIcon className="w-4 h-4 text-gold" />
-            <label className="text-xs tracking-[0.15em] uppercase text-charcoal-light font-sans font-medium">
+            <span className="text-xs tracking-[0.12em] uppercase text-charcoal-light font-sans font-medium">
               Ticket Holder {i + 2}
-            </label>
+            </span>
           </div>
           <div className="grid grid-cols-2 gap-3 mb-3">
+            <div>
+              <label htmlFor={`att-${i}-first`} className="block text-xs text-charcoal-light mb-1">First Name</label>
+              <input
+                id={`att-${i}-first`}
+                type="text"
+                value={att.firstName}
+                onChange={(e) => updateAttendee(i, 'firstName', e.target.value)}
+                className="w-full px-4 py-2.5 rounded-lg border border-gold/15 bg-cream/50 text-charcoal text-sm focus:outline-none focus:border-gold/40 focus:ring-1 focus:ring-gold/20 transition-colors"
+                required
+              />
+            </div>
+            <div>
+              <label htmlFor={`att-${i}-last`} className="block text-xs text-charcoal-light mb-1">Last Name</label>
+              <input
+                id={`att-${i}-last`}
+                type="text"
+                value={att.lastName}
+                onChange={(e) => updateAttendee(i, 'lastName', e.target.value)}
+                className="w-full px-4 py-2.5 rounded-lg border border-gold/15 bg-cream/50 text-charcoal text-sm focus:outline-none focus:border-gold/40 focus:ring-1 focus:ring-gold/20 transition-colors"
+                required
+              />
+            </div>
+          </div>
+          <div>
+            <label htmlFor={`att-${i}-email`} className="block text-xs text-charcoal-light mb-1">Email Address</label>
             <input
-              type="text"
-              placeholder="First Name"
-              value={att.firstName}
-              onChange={(e) => updateAttendee(i, 'firstName', e.target.value)}
-              className="px-4 py-2.5 rounded-lg border border-gold/15 bg-cream/50 text-charcoal text-sm placeholder:text-charcoal-light/50 focus:outline-none focus:border-gold/40 focus:ring-1 focus:ring-gold/20 transition-colors"
-              required
-            />
-            <input
-              type="text"
-              placeholder="Last Name"
-              value={att.lastName}
-              onChange={(e) => updateAttendee(i, 'lastName', e.target.value)}
-              className="px-4 py-2.5 rounded-lg border border-gold/15 bg-cream/50 text-charcoal text-sm placeholder:text-charcoal-light/50 focus:outline-none focus:border-gold/40 focus:ring-1 focus:ring-gold/20 transition-colors"
+              id={`att-${i}-email`}
+              type="email"
+              value={att.email}
+              onChange={(e) => updateAttendee(i, 'email', e.target.value)}
+              className="w-full px-4 py-2.5 rounded-lg border border-gold/15 bg-cream/50 text-charcoal text-sm focus:outline-none focus:border-gold/40 focus:ring-1 focus:ring-gold/20 transition-colors"
               required
             />
           </div>
-          <input
-            type="email"
-            placeholder="Email Address"
-            value={att.email}
-            onChange={(e) => updateAttendee(i, 'email', e.target.value)}
-            className="w-full px-4 py-2.5 rounded-lg border border-gold/15 bg-cream/50 text-charcoal text-sm placeholder:text-charcoal-light/50 focus:outline-none focus:border-gold/40 focus:ring-1 focus:ring-gold/20 transition-colors"
-            required
-          />
         </div>
       ))}
 
@@ -221,9 +239,17 @@ export default function TicketForm({ event }) {
         )}
       </button>
 
-      <p className="text-center text-xs text-charcoal-light/60 mt-3">
-        Secure checkout powered by Stripe
-      </p>
+      <div className="mt-4 pt-4 border-t border-gold/10 space-y-2">
+        <p className="text-xs text-charcoal-light/80">
+          You'll receive a confirmation email with your ticket details and event info right after checkout.
+        </p>
+        <p className="text-xs text-charcoal-light/60">
+          Need to cancel? Email us at <a href="mailto:hello@bloombabe.com" className="text-gold-dark hover:underline">hello@bloombabe.com</a> up to 48 hours before the event for a full refund.
+        </p>
+        <p className="text-xs text-charcoal-light/40 text-center mt-2">
+          Secure checkout powered by Stripe
+        </p>
+      </div>
     </form>
   )
 }

@@ -15,13 +15,15 @@
   --color-rose-light: #E8C4C4;
   --color-blush: #F2E0D0;
 
-  --font-serif: 'Playfair Display', Georgia, serif;
-  --font-sans: 'Inter', system-ui, sans-serif;
+  --font-serif: 'Gloock', Georgia, serif;
+  --font-sans: 'Figtree', system-ui, sans-serif;
 }
 
 body {
   margin: 0;
   font-family: var(--font-sans);
+  font-size: 17px;
+  line-height: 1.6;
   color: var(--color-charcoal);
   background: var(--color-cream);
   -webkit-font-smoothing: antialiased;

@@ -20,7 +20,7 @@ export default function Footer() {
         <div className="grid md:grid-cols-3 gap-10 mb-12">
           {/* Quick links */}
           <div className="text-center md:text-left">
-            <h4 className="text-xs tracking-[0.2em] uppercase text-gold mb-4 font-sans font-medium">Explore</h4>
+            <h4 className="text-xs tracking-widest uppercase text-gold mb-4 font-sans font-medium">Explore</h4>
             <div className="flex flex-col gap-2">
               <Link to="/" className="text-cream/60 hover:text-cream text-sm transition-colors">Home</Link>
               <Link to="/events" className="text-cream/60 hover:text-cream text-sm transition-colors">Workshops</Link>
@@ -30,7 +30,7 @@ export default function Footer() {
 
           {/* Connect */}
           <div className="text-center">
-            <h4 className="text-xs tracking-[0.2em] uppercase text-gold mb-4 font-sans font-medium">Connect</h4>
+            <h4 className="text-xs tracking-widest uppercase text-gold mb-4 font-sans font-medium">Connect</h4>
             <div className="flex justify-center gap-4">
               <a href="#" target="_blank" rel="noopener noreferrer" className="p-2.5 rounded-full border border-cream/15 text-cream/60 hover:text-cream hover:border-cream/30 transition-all hover:-translate-y-0.5">
                 <InstagramIcon className="w-5 h-5" />
@@ -49,7 +49,7 @@ export default function Footer() {
 
           {/* Contact */}
           <div className="text-center md:text-right">
-            <h4 className="text-xs tracking-[0.2em] uppercase text-gold mb-4 font-sans font-medium">Get in Touch</h4>
+            <h4 className="text-xs tracking-widest uppercase text-gold mb-4 font-sans font-medium">Get in Touch</h4>
             <p className="text-cream/60 text-sm mb-1">Questions about events?</p>
             <a href="mailto:hello@bloombabe.com" className="text-gold hover:text-gold-light text-sm transition-colors">
               hello@bloombabe.com

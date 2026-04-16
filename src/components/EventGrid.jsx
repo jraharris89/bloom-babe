@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react'
 import EventCard from './EventCard'
-import { FloralDivider, FlowerIcon } from './Icons'
+import { FlowerIcon } from './Icons'
 import { fetchEvents } from '../lib/api'
 
 // Demo events for development / when no backend is connected
@@ -72,18 +72,19 @@ export default function EventGrid({ limit, showHeader = true }) {
   const displayEvents = limit ? events.slice(0, limit) : events
 
   return (
-    <section id="events" className="py-24 md:py-32 bg-cream-dark/30">
+    <section id="events" className="py-20 md:py-28 bg-cream-dark/30">
       <div className="max-w-6xl mx-auto px-6">
         {showHeader && (
-          <div className="text-center mb-16">
-            <p className="text-gold text-xs tracking-[0.3em] uppercase mb-3 font-sans font-medium">
-              Upcoming
-            </p>
-            <h2 className="font-serif text-3xl md:text-5xl text-charcoal mb-4">
-              Workshops & Events
-            </h2>
-            <FloralDivider className="w-48 mx-auto text-gold mb-8" />
-            <p className="text-charcoal-light text-base md:text-lg max-w-xl mx-auto">
+          <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-4 mb-12">
+            <div>
+              <p className="text-gold text-xs tracking-[0.12em] uppercase mb-2 font-sans font-medium">
+                Upcoming
+              </p>
+              <h2 className="font-serif text-3xl md:text-4xl text-charcoal">
+                Workshops & Events
+              </h2>
+            </div>
+            <p className="text-charcoal-light text-sm md:text-base max-w-sm">
               Find your next creative experience. Grab a ticket before they're gone!
             </p>
           </div>

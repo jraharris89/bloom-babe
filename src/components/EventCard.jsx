@@ -20,16 +20,14 @@ export default function EventCard({ event }) {
     minute: '2-digit',
   })
 
-  return (
-    <Link
-      to={isSoldOut ? '#' : `/events/${event.id}`}
-      className={`group block bg-white rounded-2xl overflow-hidden border border-gold/10 transition-all duration-300 ${
-        isSoldOut
-          ? 'opacity-70 cursor-not-allowed'
-          : 'hover:shadow-xl hover:shadow-gold/10 hover:-translate-y-1 hover:border-gold/20'
-      }`}
-      onClick={isSoldOut ? (e) => e.preventDefault() : undefined}
-    >
+  const cardClasses = `group block bg-white rounded-2xl overflow-hidden border border-gold/10 transition-all duration-300 ${
+    isSoldOut
+      ? 'opacity-70'
+      : 'hover:shadow-xl hover:shadow-gold/10 hover:-translate-y-1 hover:border-gold/20'
+  }`
+
+  const content = (
+    <>
       {/* Image area with event type icon */}
       <div className="relative h-52 bg-gradient-to-br from-cream-dark to-cream overflow-hidden">
         {event.image ? (
@@ -80,6 +78,16 @@ export default function EventCard({ event }) {
           </div>
         )}
       </div>
+    </>
+  )
+
+  if (isSoldOut) {
+    return <article className={cardClasses}>{content}</article>
+  }
+
+  return (
+    <Link to={`/events/${event.id}`} className={cardClasses}>
+      {content}
     </Link>
   )
 }

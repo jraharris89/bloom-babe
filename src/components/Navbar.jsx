@@ -36,9 +36,7 @@ export default function Navbar() {
             alt="Bloom Babe"
             className="h-10 w-10 rounded-full object-cover transition-transform duration-300 group-hover:scale-105"
           />
-          <span className={`font-serif text-lg tracking-wide transition-colors duration-300 ${
-            scrolled ? 'text-charcoal' : 'text-cream'
-          }`}>
+          <span className="font-serif text-lg tracking-wide text-charcoal transition-colors duration-300">
             Bloom Babe
           </span>
         </Link>
@@ -47,30 +45,26 @@ export default function Navbar() {
         <div className="hidden md:flex items-center gap-8">
           {isHome ? (
             <>
-              <button onClick={() => scrollToSection('about')} className={`nav-link ${scrolled ? 'text-charcoal-light hover:text-gold' : 'text-cream/80 hover:text-cream'}`}>
+              <button onClick={() => scrollToSection('about')} className="text-charcoal-light hover:text-gold transition-colors text-sm font-sans tracking-wide">
                 About
               </button>
-              <button onClick={() => scrollToSection('events')} className={`nav-link ${scrolled ? 'text-charcoal-light hover:text-gold' : 'text-cream/80 hover:text-cream'}`}>
+              <button onClick={() => scrollToSection('events')} className="text-charcoal-light hover:text-gold transition-colors text-sm font-sans tracking-wide">
                 Events
               </button>
             </>
           ) : (
             <>
-              <Link to="/#about" className={`nav-link ${scrolled ? 'text-charcoal-light hover:text-gold' : 'text-cream/80 hover:text-cream'}`}>
+              <Link to="/#about" className="text-charcoal-light hover:text-gold transition-colors text-sm font-sans tracking-wide">
                 About
               </Link>
-              <Link to="/#events" className={`nav-link ${scrolled ? 'text-charcoal-light hover:text-gold' : 'text-cream/80 hover:text-cream'}`}>
+              <Link to="/#events" className="text-charcoal-light hover:text-gold transition-colors text-sm font-sans tracking-wide">
                 Events
               </Link>
             </>
           )}
           <Link
             to="/events"
-            className={`inline-flex items-center gap-1.5 px-5 py-2 rounded-full text-sm font-medium transition-all duration-300 ${
-              scrolled
-                ? 'bg-charcoal text-cream hover:bg-charcoal-light'
-                : 'bg-cream/15 text-cream border border-cream/30 hover:bg-cream/25'
-            }`}
+            className="inline-flex items-center gap-1.5 px-5 py-2 rounded-full text-sm font-medium bg-charcoal text-cream hover:bg-charcoal-light transition-all duration-300"
           >
             <FlowerIcon className="w-4 h-4" />
             Book a Workshop
@@ -80,32 +74,35 @@ export default function Navbar() {
         {/* Mobile menu button */}
         <button
           onClick={() => setIsOpen(!isOpen)}
-          className={`md:hidden p-2 transition-colors ${scrolled ? 'text-charcoal' : 'text-cream'}`}
+          className="md:hidden p-2 text-charcoal transition-colors"
         >
           {isOpen ? <CloseIcon className="w-6 h-6" /> : <MenuIcon className="w-6 h-6" />}
         </button>
       </div>
 
-      {/* Mobile menu */}
-      <div className={`md:hidden overflow-hidden transition-all duration-300 ${
-        isOpen ? 'max-h-64 opacity-100' : 'max-h-0 opacity-0'
-      }`}>
-        <div className="bg-cream/95 backdrop-blur-md px-6 py-4 flex flex-col gap-3 border-t border-gold/10">
-          {isHome ? (
-            <>
-              <button onClick={() => scrollToSection('about')} className="text-left py-2 text-charcoal-light hover:text-gold transition-colors font-sans text-sm tracking-wide">About</button>
-              <button onClick={() => scrollToSection('events')} className="text-left py-2 text-charcoal-light hover:text-gold transition-colors font-sans text-sm tracking-wide">Events</button>
-            </>
-          ) : (
-            <>
-              <Link to="/#about" className="py-2 text-charcoal-light hover:text-gold transition-colors font-sans text-sm tracking-wide">About</Link>
-              <Link to="/#events" className="py-2 text-charcoal-light hover:text-gold transition-colors font-sans text-sm tracking-wide">Events</Link>
-            </>
-          )}
-          <Link to="/events" className="inline-flex items-center justify-center gap-1.5 px-5 py-2.5 rounded-full text-sm font-medium bg-charcoal text-cream hover:bg-charcoal-light transition-colors">
-            <FlowerIcon className="w-4 h-4" />
-            Book a Workshop
-          </Link>
+      {/* Mobile menu — grid-rows animation avoids layout thrash */}
+      <div
+        className="md:hidden grid transition-[grid-template-rows] duration-300 ease-out"
+        style={{ gridTemplateRows: isOpen ? '1fr' : '0fr' }}
+      >
+        <div className="overflow-hidden">
+          <div className={`bg-cream/95 backdrop-blur-md px-6 py-4 flex flex-col gap-3 border-t border-gold/10 transition-opacity duration-300 ${isOpen ? 'opacity-100' : 'opacity-0'}`}>
+            {isHome ? (
+              <>
+                <button onClick={() => scrollToSection('about')} className="text-left py-2 text-charcoal-light hover:text-gold transition-colors font-sans text-sm tracking-wide">About</button>
+                <button onClick={() => scrollToSection('events')} className="text-left py-2 text-charcoal-light hover:text-gold transition-colors font-sans text-sm tracking-wide">Events</button>
+              </>
+            ) : (
+              <>
+                <Link to="/#about" className="py-2 text-charcoal-light hover:text-gold transition-colors font-sans text-sm tracking-wide">About</Link>
+                <Link to="/#events" className="py-2 text-charcoal-light hover:text-gold transition-colors font-sans text-sm tracking-wide">Events</Link>
+              </>
+            )}
+            <Link to="/events" className="inline-flex items-center justify-center gap-1.5 px-5 py-2.5 rounded-full text-sm font-medium bg-charcoal text-cream hover:bg-charcoal-light transition-colors">
+              <FlowerIcon className="w-4 h-4" />
+              Book a Workshop
+            </Link>
+          </div>
         </div>
       </div>
     </nav>
