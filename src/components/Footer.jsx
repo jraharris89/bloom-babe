@@ -1,13 +1,17 @@
 import { Link } from 'react-router-dom'
 import { InstagramIcon, FacebookIcon, TikTokIcon, EmailIcon, FlowerIcon, FloralDivider } from './Icons'
+import { FooterBotanicals } from './BotanicalBackgrounds'
 
 export default function Footer() {
   return (
-    <footer className="bg-charcoal text-cream">
-      <div className="max-w-6xl mx-auto px-6 py-16">
+    <footer className="relative bg-charcoal text-cream overflow-hidden">
+      {/* Botanical background layers */}
+      <FooterBotanicals />
+
+      <div className="relative z-10 max-w-6xl mx-auto px-6 py-16">
         <div className="text-center mb-12">
           <img
-            src="/bloom-babe-logo-large.jpeg"
+            src={import.meta.env.BASE_URL + 'bloom-babe-logo-large.jpeg'}
             alt="Bloom Babe"
             className="w-20 h-20 rounded-full object-cover mx-auto mb-4 ring-1 ring-gold/20"
           />

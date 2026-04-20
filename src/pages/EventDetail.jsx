@@ -12,6 +12,7 @@ const DEMO_EVENTS = {
     id: 'demo-1',
     name: 'Spring Floral Arrangement Workshop',
     type: 'floral',
+    image: import.meta.env.BASE_URL + 'Floral_Arrangement.jpg',
     date: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString(),
     location: 'The Garden Room, Downtown',
     price: 65,
@@ -23,6 +24,7 @@ const DEMO_EVENTS = {
     id: 'demo-2',
     name: 'Paint & Sip: Botanical Edition',
     type: 'paint-night',
+    image: import.meta.env.BASE_URL + 'Paint_Night.jpg',
     date: new Date(Date.now() + 14 * 24 * 60 * 60 * 1000).toISOString(),
     location: 'Bloom Studio',
     price: 45,
@@ -34,23 +36,13 @@ const DEMO_EVENTS = {
     id: 'demo-3',
     name: 'Terrarium Building Night',
     type: 'terrarium',
+    image: import.meta.env.BASE_URL + 'Terrarium.jpg',
     date: new Date(Date.now() + 21 * 24 * 60 * 60 * 1000).toISOString(),
     location: 'The Garden Room, Downtown',
     price: 55,
     totalTickets: 16,
     soldTickets: 15,
     description: 'Build your own living terrarium to take home. We supply the glass vessels, soil, moss, and mini plants.\n\nLearn about different plant ecosystems and create a self-sustaining mini garden that will thrive on your desk or windowsill.\n\nWhat\'s included:\n- Glass vessel\n- Soil, rocks, and moss\n- Mini plants\n- Care instructions',
-  },
-  'demo-4': {
-    id: 'demo-4',
-    name: 'Plant Games for Plant Prizes',
-    type: 'plant-games',
-    date: new Date(Date.now() + 28 * 24 * 60 * 60 * 1000).toISOString(),
-    location: 'Bloom Studio',
-    price: 35,
-    totalTickets: 30,
-    soldTickets: 30,
-    description: 'A night of plant trivia, games, and prizes. Winners take home beautiful plants!',
   },
 }
 
@@ -142,19 +134,19 @@ export default function EventDetail() {
 
             <h1 className="font-serif text-3xl md:text-4xl text-charcoal mb-4">{event.name}</h1>
 
-            <div className="flex flex-wrap gap-4 mb-8">
-              <div className="flex items-center gap-2 text-charcoal-light text-sm bg-cream-dark/50 px-4 py-2 rounded-full">
-                <CalendarIcon className="w-4 h-4 text-gold" />
+            <div className="space-y-2 mb-8">
+              <div className="flex items-center gap-2 text-charcoal-light text-sm">
+                <CalendarIcon className="w-4 h-4 text-gold/70 shrink-0" />
                 <span>{date.toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric' })} at {date.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' })}</span>
               </div>
               {event.location && (
-                <div className="flex items-center gap-2 text-charcoal-light text-sm bg-cream-dark/50 px-4 py-2 rounded-full">
-                  <LocationIcon className="w-4 h-4 text-gold" />
+                <div className="flex items-center gap-2 text-charcoal-light text-sm">
+                  <LocationIcon className="w-4 h-4 text-gold/70 shrink-0" />
                   <span>{event.location}</span>
                 </div>
               )}
-              <div className="flex items-center gap-2 text-charcoal-light text-sm bg-cream-dark/50 px-4 py-2 rounded-full">
-                <TicketIcon className="w-4 h-4 text-gold" />
+              <div className="flex items-center gap-2 text-charcoal-light text-sm">
+                <TicketIcon className="w-4 h-4 text-gold/70 shrink-0" />
                 <span>${event.price} per person</span>
               </div>
             </div>

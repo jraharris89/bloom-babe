@@ -58,3 +58,64 @@ html {
 ::-webkit-scrollbar-thumb:hover {
   background: var(--color-sage-dark);
 }
+
+/* ─── Botanical background animations ─── */
+
+/* Gentle sway — slow rocking motion for large elements */
+@keyframes botanical-sway {
+  0%, 100% { transform: rotate(0deg); }
+  50% { transform: rotate(2.5deg); }
+}
+
+/* Slower sway for vines */
+@keyframes botanical-sway-slow {
+  0%, 100% { transform: rotate(0deg) translateX(0); }
+  50% { transform: rotate(1.5deg) translateX(3px); }
+}
+
+/* Gentle float for small scattered elements */
+@keyframes botanical-float {
+  0%, 100% { transform: translateY(0) rotate(var(--float-start, 0deg)); }
+  50% { transform: translateY(-8px) rotate(calc(var(--float-start, 0deg) + 3deg)); }
+}
+
+/* Delayed variant */
+@keyframes botanical-float-delayed {
+  0%, 100% { transform: translateY(0) rotate(var(--float-start, 0deg)); }
+  50% { transform: translateY(-6px) rotate(calc(var(--float-start, 0deg) - 2deg)); }
+}
+
+.botanical-sway {
+  animation: botanical-sway 22s ease-in-out infinite;
+}
+
+.botanical-sway-slow {
+  animation: botanical-sway-slow 30s ease-in-out infinite;
+}
+
+.botanical-float {
+  animation: botanical-float 18s ease-in-out infinite;
+}
+
+.botanical-float-delayed {
+  animation: botanical-float-delayed 24s ease-in-out infinite;
+  animation-delay: -8s;
+}
+
+/* Respect reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  .botanical-sway,
+  .botanical-sway-slow,
+  .botanical-float,
+  .botanical-float-delayed {
+    animation: none;
+  }
+}
+
+/* Hide some botanicals on very small screens to reduce visual noise */
+@media (max-width: 480px) {
+  .botanical-float,
+  .botanical-float-delayed {
+    display: none;
+  }
+}

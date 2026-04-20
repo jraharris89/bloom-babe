@@ -29,7 +29,7 @@ export default function EventCard({ event }) {
   const content = (
     <>
       {/* Image area with event type icon */}
-      <div className="relative h-52 bg-gradient-to-br from-cream-dark to-cream overflow-hidden">
+      <div className="relative h-52 bg-linear-to-br from-cream-dark to-cream overflow-hidden">
         {event.image ? (
           <img src={event.image} alt={event.name} className="w-full h-full object-cover" />
         ) : (
@@ -37,20 +37,18 @@ export default function EventCard({ event }) {
             <EventIcon className={`w-20 h-20 text-${eventType.color} opacity-30`} />
           </div>
         )}
-        <div className="absolute top-3 right-3">
-          <StatusBadge totalTickets={event.totalTickets} soldTickets={event.soldTickets} />
-        </div>
-        <div className="absolute top-3 left-3">
-          <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-white/90 backdrop-blur-sm text-xs font-medium text-charcoal">
+        <div className="absolute top-3 inset-x-3 flex items-center justify-between gap-2">
+          <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full border border-transparent bg-white/90 backdrop-blur-sm text-xs font-medium text-charcoal leading-none">
             <EventIcon className="w-3.5 h-3.5" />
             {eventType.label}
           </span>
+          <StatusBadge totalTickets={event.totalTickets} soldTickets={event.soldTickets} />
         </div>
       </div>
 
       {/* Content */}
-      <div className="p-5">
-        <h3 className="font-serif text-xl text-charcoal mb-3 group-hover:text-gold-dark transition-colors">
+      <div className="p-5 flex flex-col">
+        <h3 className="font-serif text-xl text-charcoal mb-3 line-clamp-2 min-h-14 group-hover:text-gold-dark transition-colors">
           {event.name}
         </h3>
 

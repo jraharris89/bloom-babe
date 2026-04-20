@@ -1,9 +1,13 @@
 import { FloralDivider } from './Icons'
+import { AboutBotanicals } from './BotanicalBackgrounds'
 
 export default function About() {
   return (
-    <section id="about" className="py-24 md:py-40 bg-cream">
-      <div className="max-w-5xl mx-auto px-6">
+    <section id="about" className="relative py-24 md:py-40 bg-cream overflow-hidden">
+      {/* Botanical background layers */}
+      <AboutBotanicals />
+
+      <div className="relative z-10 max-w-5xl mx-auto px-6">
         {/* Two-column editorial layout — text left, pull quote right */}
         <div className="grid md:grid-cols-5 gap-12 md:gap-16 items-start mb-20">
           <div className="md:col-span-3">
@@ -35,8 +39,8 @@ export default function About() {
           </div>
         </div>
 
-        {/* Values — horizontal strip, no cards, no icons above headings */}
-        <div className="grid md:grid-cols-3 gap-px bg-gold/10 rounded-xl overflow-hidden">
+        {/* Values — three-stage botanical journey: Create → Connect → Recharge */}
+        <div className="relative grid md:grid-cols-3 gap-px bg-gold/10 rounded-xl overflow-hidden">
           <div className="bg-cream p-8 md:p-10">
             <span className="font-serif text-lg text-charcoal">Create</span>
             <p className="text-charcoal-light text-sm leading-relaxed mt-2">

@@ -1,5 +1,5 @@
 import { Routes, Route, useLocation } from 'react-router-dom'
-import { useEffect } from 'react'
+import { useEffect, useLayoutEffect } from 'react'
 import Navbar from './components/Navbar'
 import Footer from './components/Footer'
 import Home from './pages/Home'
@@ -10,19 +10,24 @@ import Admin from './pages/Admin'
 import Design1 from './pages/Design1'
 import Design2 from './pages/Design2'
 import Design3 from './pages/Design3'
+import ConceptPitch from './pages/ConceptPitch'
 
 function ScrollToTop() {
   const { pathname, hash } = useLocation()
+
   useEffect(() => {
-    if (hash) {
-      const el = document.querySelector(hash)
-      if (el) {
-        setTimeout(() => el.scrollIntoView({ behavior: 'smooth' }), 100)
-        return
-      }
+    if (!hash) return
+    const el = document.querySelector(hash)
+    if (el) {
+      setTimeout(() => el.scrollIntoView({ behavior: 'smooth' }), 100)
     }
-    window.scrollTo(0, 0)
   }, [pathname, hash])
+
+  useLayoutEffect(() => {
+    if (hash) return
+    window.scrollTo({ top: 0, left: 0, behavior: 'instant' })
+  }, [pathname, hash])
+
   return null
 }
 
@@ -44,6 +49,7 @@ export default function App() {
           <Route path="/design1" element={<Design1 />} />
           <Route path="/design2" element={<Design2 />} />
           <Route path="/design3" element={<Design3 />} />
+          <Route path="/concept-pitch" element={<ConceptPitch />} />
         </Routes>
       </main>
       {!isAdmin && <Footer />}

@@ -32,7 +32,7 @@ export default function Navbar() {
       <div className="max-w-6xl mx-auto px-6 py-4 flex items-center justify-between">
         <Link to="/" className="flex items-center gap-2 group">
           <img
-            src="/bloom-babe-logo-large.jpeg"
+            src={import.meta.env.BASE_URL + 'bloom-babe-logo-large.jpeg'}
             alt="Bloom Babe"
             className="h-10 w-10 rounded-full object-cover transition-transform duration-300 group-hover:scale-105"
           />

@@ -77,7 +77,7 @@ export default function Design1() {
           {/* Image — overlaps into next section */}
           <div className="flex justify-center md:justify-end">
             <img
-              src="/bloom-babe-logo-large.jpeg"
+              src={import.meta.env.BASE_URL + 'bloom-babe-logo-large.jpeg'}
               alt="Bloom Babe Floral & Events"
               className="w-72 h-72 md:w-96 md:h-96 rounded-full object-cover shadow-2xl ring-2 ring-gold/10 md:translate-y-24"
             />

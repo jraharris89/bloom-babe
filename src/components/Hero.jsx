@@ -1,4 +1,5 @@
-import { FloralCorner, ChevronDownIcon } from "./Icons";
+import { ChevronDownIcon } from "./Icons";
+import { HeroBotanicals } from "./BotanicalBackgrounds";
 
 export default function Hero() {
   const scrollToAbout = () => {
@@ -18,9 +19,8 @@ export default function Hero() {
         }}
       />
 
-      {/* Floral corner decorations */}
-      <FloralCorner className="absolute top-0 left-0 w-24 md:w-32 text-gold/40" />
-      <FloralCorner className="absolute top-0 right-0 w-24 md:w-32 text-gold/40 -scale-x-100" />
+      {/* Botanical background layers */}
+      <HeroBotanicals />
 
       {/* Content — asymmetric two-column layout on desktop, stacked on mobile */}
       <div className="relative z-10 w-full max-w-6xl mx-auto px-6 py-32 md:py-0">
@@ -60,7 +60,7 @@ export default function Hero() {
           {/* Image — right side */}
           <div className="flex justify-center md:justify-end">
             <img
-              src="/bloom-babe-logo-large.jpeg"
+              src={import.meta.env.BASE_URL + 'bloom-babe-logo-large.jpeg'}
               alt="Bloom Babe Floral & Events"
               className="w-64 h-64 md:w-80 md:h-80 lg:w-96 lg:h-96 rounded-full object-cover shadow-2xl ring-2 ring-gold/15"
             />

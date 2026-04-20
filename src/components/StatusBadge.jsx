@@ -9,22 +9,22 @@ export function getTicketStatus(totalTickets, soldTickets) {
 const statusConfig = {
   'available': {
     label: 'Available',
-    className: 'bg-sage/15 text-sage-dark border-sage/30',
+    textClass: 'text-sage-dark',
     dot: 'bg-sage',
   },
   'selling-quick': {
     label: 'Selling Quick',
-    className: 'bg-gold/15 text-gold-dark border-gold/30',
+    textClass: 'text-gold-dark',
     dot: 'bg-gold',
   },
   'almost-sold-out': {
     label: 'Almost Sold Out',
-    className: 'bg-rose/20 text-rose-800 border-rose/40',
+    textClass: 'text-rose',
     dot: 'bg-rose animate-pulse',
   },
   'sold-out': {
     label: 'Sold Out',
-    className: 'bg-charcoal/10 text-charcoal-light border-charcoal/20',
+    textClass: 'text-charcoal-light',
     dot: 'bg-charcoal-light',
   },
 }
@@ -34,8 +34,8 @@ export default function StatusBadge({ totalTickets, soldTickets }) {
   const config = statusConfig[status]
 
   return (
-    <span className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-medium border ${config.className}`}>
-      <span className={`w-1.5 h-1.5 rounded-full ${config.dot}`} />
+    <span className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-white/95 backdrop-blur-sm shadow-sm ${config.textClass}`}>
+      <span className={`w-1.5 h-1.5 rounded-full shrink-0 ${config.dot}`} />
       {config.label}
     </span>
   )

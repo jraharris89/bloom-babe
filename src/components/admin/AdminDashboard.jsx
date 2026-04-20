@@ -69,7 +69,7 @@ export default function AdminDashboard({ token, onLogout }) {
         <div className="max-w-6xl mx-auto px-6 py-4 flex items-center justify-between">
           <div className="flex items-center gap-3">
             <img
-              src="/bloom-babe-logo-large.jpeg"
+              src={import.meta.env.BASE_URL + 'bloom-babe-logo-large.jpeg'}
               alt="Bloom Babe"
               className="w-8 h-8 rounded-full object-cover"
             />
