@@ -13,7 +13,7 @@ import { getEventType } from '../lib/eventTypes'
 */
 
 const DEMO_EVENTS = [
-  { id: 'demo-1', name: 'Spring Floral Arrangement Workshop', type: 'floral', date: new Date(Date.now() + 7 * 86400000).toISOString(), location: 'The Garden Room, Downtown', price: 65, totalTickets: 20, soldTickets: 14 },
+  { id: 'demo-1', name: 'Plant Bingo', type: 'plant-games', date: new Date('2026-06-27T19:00:00').toISOString(), location: 'Iconic Venue, Boise', price: 25, totalTickets: 30, soldTickets: 0 },
   { id: 'demo-2', name: 'Paint & Sip: Botanical Edition', type: 'paint-night', date: new Date(Date.now() + 14 * 86400000).toISOString(), location: 'Bloom Studio', price: 45, totalTickets: 24, soldTickets: 8 },
   { id: 'demo-3', name: 'Terrarium Building Night', type: 'terrarium', date: new Date(Date.now() + 21 * 86400000).toISOString(), location: 'The Garden Room, Downtown', price: 55, totalTickets: 16, soldTickets: 15 },
 ]
@@ -58,7 +58,7 @@ export default function Design3() {
             {/* Image — spans the right side, pushed up to overlap with headline */}
             <div className="md:col-span-5 md:col-start-8 md:-mt-48">
               <img
-                src={import.meta.env.BASE_URL + 'bloom-babe-logo-large.jpeg'}
+                src="/bloom-babe-logo-large.jpeg"
                 alt="Bloom Babe"
                 className="w-full aspect-[4/5] object-cover rounded-2xl shadow-xl"
               />

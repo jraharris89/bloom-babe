@@ -12,11 +12,11 @@ export async function fetchEvent(id) {
   return res.json()
 }
 
-export async function createCheckoutSession({ eventId, quantity, buyer, attendees }) {
+export async function createCheckoutSession({ eventId, quantity, buyer, attendees, promoCode }) {
   const res = await fetch(`${API_BASE}/.netlify/functions/checkout`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ eventId, quantity, buyer, attendees }),
+    body: JSON.stringify({ eventId, quantity, buyer, attendees, promoCode }),
   })
   if (!res.ok) {
     const error = await res.json()

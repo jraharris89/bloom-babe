@@ -21,7 +21,7 @@ export default async function handler(req) {
     const events = await listEvents()
     // Only return active, future events for public view
     const now = new Date()
-    const activeEvents = events.filter(e => !e.cancelled && new Date(e.date) > now)
+    const activeEvents = events.filter(e => !e.cancelled && !e.draft && new Date(e.date) > now)
     return new Response(JSON.stringify(activeEvents), {
       headers: { 'Content-Type': 'application/json' },
     })

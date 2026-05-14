@@ -46,7 +46,7 @@ export default function Hero() {
                 href="#events"
                 className="inline-flex items-center justify-center gap-2 px-8 py-3.5 rounded-full bg-charcoal text-cream font-medium text-sm tracking-wide hover:bg-charcoal-light transition-all duration-300"
               >
-                Explore Workshops
+                Events
               </a>
               <button
                 onClick={scrollToAbout}
@@ -60,7 +60,7 @@ export default function Hero() {
           {/* Image — right side */}
           <div className="flex justify-center md:justify-end">
             <img
-              src={import.meta.env.BASE_URL + 'bloom-babe-logo-large.jpeg'}
+              src="/bloom-babe-logo-large.jpeg"
               alt="Bloom Babe Floral & Events"
               className="w-64 h-64 md:w-80 md:h-80 lg:w-96 lg:h-96 rounded-full object-cover shadow-2xl ring-2 ring-gold/15"
             />

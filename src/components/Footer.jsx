@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom'
-import { InstagramIcon, FacebookIcon, TikTokIcon, EmailIcon, FlowerIcon, FloralDivider } from './Icons'
+import { InstagramIcon, FacebookIcon, EmailIcon, FlowerIcon, FloralDivider } from './Icons'
 import { FooterBotanicals } from './BotanicalBackgrounds'
 
 export default function Footer() {
@@ -11,7 +11,7 @@ export default function Footer() {
       <div className="relative z-10 max-w-6xl mx-auto px-6 py-16">
         <div className="text-center mb-12">
           <img
-            src={import.meta.env.BASE_URL + 'bloom-babe-logo-large.jpeg'}
+            src="/bloom-babe-logo-large.jpeg"
             alt="Bloom Babe"
             className="w-20 h-20 rounded-full object-cover mx-auto mb-4 ring-1 ring-gold/20"
           />
@@ -27,25 +27,23 @@ export default function Footer() {
             <h4 className="text-xs tracking-widest uppercase text-gold mb-4 font-sans font-medium">Explore</h4>
             <div className="flex flex-col gap-2">
               <Link to="/" className="text-cream/60 hover:text-cream text-sm transition-colors">Home</Link>
-              <Link to="/events" className="text-cream/60 hover:text-cream text-sm transition-colors">Workshops</Link>
+              <Link to="/calendar" className="text-cream/60 hover:text-cream text-sm transition-colors">Calendar</Link>
               <a href="/#about" className="text-cream/60 hover:text-cream text-sm transition-colors">About Us</a>
+              <Link to="/faq" className="text-cream/60 hover:text-cream text-sm transition-colors">FAQ</Link>
             </div>
           </div>
 
           {/* Connect */}
           <div className="text-center">
-            <h4 className="text-xs tracking-widest uppercase text-gold mb-4 font-sans font-medium">Connect</h4>
+            <h4 className="text-xs tracking-widest uppercase text-gold mb-4 font-sans font-medium">Follow Along</h4>
             <div className="flex justify-center gap-4">
-              <a href="#" target="_blank" rel="noopener noreferrer" className="p-2.5 rounded-full border border-cream/15 text-cream/60 hover:text-cream hover:border-cream/30 transition-all hover:-translate-y-0.5">
+              <a href="https://www.instagram.com/bloom.babe.events" target="_blank" rel="noopener noreferrer" className="p-2.5 rounded-full border border-cream/15 text-cream/60 hover:text-cream hover:border-cream/30 transition-all hover:-translate-y-0.5">
                 <InstagramIcon className="w-5 h-5" />
               </a>
-              <a href="#" target="_blank" rel="noopener noreferrer" className="p-2.5 rounded-full border border-cream/15 text-cream/60 hover:text-cream hover:border-cream/30 transition-all hover:-translate-y-0.5">
+              <a href="https://www.facebook.com/people/Bloom-Babe/61574419684661/" target="_blank" rel="noopener noreferrer" className="p-2.5 rounded-full border border-cream/15 text-cream/60 hover:text-cream hover:border-cream/30 transition-all hover:-translate-y-0.5">
                 <FacebookIcon className="w-5 h-5" />
               </a>
-              <a href="#" target="_blank" rel="noopener noreferrer" className="p-2.5 rounded-full border border-cream/15 text-cream/60 hover:text-cream hover:border-cream/30 transition-all hover:-translate-y-0.5">
-                <TikTokIcon className="w-5 h-5" />
-              </a>
-              <a href="#" className="p-2.5 rounded-full border border-cream/15 text-cream/60 hover:text-cream hover:border-cream/30 transition-all hover:-translate-y-0.5">
+              <a href="mailto:Idahobloombabe@gmail.com" className="p-2.5 rounded-full border border-cream/15 text-cream/60 hover:text-cream hover:border-cream/30 transition-all hover:-translate-y-0.5">
                 <EmailIcon className="w-5 h-5" />
               </a>
             </div>
@@ -55,9 +53,17 @@ export default function Footer() {
           <div className="text-center md:text-right">
             <h4 className="text-xs tracking-widest uppercase text-gold mb-4 font-sans font-medium">Get in Touch</h4>
             <p className="text-cream/60 text-sm mb-1">Questions about events?</p>
-            <a href="mailto:hello@bloombabe.com" className="text-gold hover:text-gold-light text-sm transition-colors">
-              hello@bloombabe.com
+            <a href="mailto:Idahobloombabe@gmail.com" className="text-gold hover:text-gold-light text-sm transition-colors">
+              Idahobloombabe@gmail.com
             </a>
+            <div className="mt-6 border-t border-cream/10 pt-6">
+              <p className="text-cream/50 text-xs leading-relaxed">
+                Are you a venue interested in hosting a Bloom Babe event?{' '}
+                <a href="mailto:Idahobloombabe@gmail.com" className="text-gold hover:text-gold-light transition-colors underline underline-offset-2">
+                  Let's connect
+                </a>
+              </p>
+            </div>
           </div>
         </div>
 

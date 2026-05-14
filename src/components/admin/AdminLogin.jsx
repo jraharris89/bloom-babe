@@ -33,7 +33,7 @@ export default function AdminLogin({ onLogin }) {
       <div className="w-full max-w-sm">
         <div className="text-center mb-8">
           <img
-            src={import.meta.env.BASE_URL + 'bloom-babe-logo-large.jpeg'}
+            src="/bloom-babe-logo-large.jpeg"
             alt="Bloom Babe"
             className="w-16 h-16 rounded-full object-cover mx-auto mb-4 ring-1 ring-gold/20"
           />

@@ -1,5 +1,6 @@
 import { createToken, requireAuth } from './lib/auth.js'
 import { listEvents, getEvent, saveEvent, deleteEvent, getAttendees } from './lib/store.js'
+import { validateEventInput } from './lib/validate.js'
 import crypto from 'crypto'
 
 export default async function handler(req) {
@@ -35,7 +36,16 @@ export default async function handler(req) {
 
     // Login doesn't need auth
     if (action === 'login') {
-      const token = createToken(body.password)
+      let token
+      try {
+        token = createToken(body.password)
+      } catch (err) {
+        console.error('[admin-auth] misconfigured:', err.message)
+        return new Response(
+          JSON.stringify({ error: 'Admin sign-in is temporarily unavailable. Please try again shortly.' }),
+          { status: 503, headers: { 'Content-Type': 'application/json' } }
+        )
+      }
       if (!token) {
         return new Response(JSON.stringify({ error: 'Invalid password' }), {
           status: 401,
@@ -52,6 +62,13 @@ export default async function handler(req) {
     if (authError) return new Response(authError.body, { status: authError.statusCode, headers: { 'Content-Type': 'application/json' } })
 
     if (action === 'create') {
+      const v = validateEventInput(body, { partial: false })
+      if (!v.ok) {
+        return new Response(JSON.stringify({ error: v.errors.join('; ') }), {
+          status: 400,
+          headers: { 'Content-Type': 'application/json' },
+        })
+      }
       const event = {
         id: crypto.randomUUID(),
         name: body.name,
@@ -62,7 +79,9 @@ export default async function handler(req) {
         price: body.price,
         totalTickets: body.totalTickets,
         soldTickets: 0,
-        image: body.image || null,
+        image: typeof body.image === 'string' && body.image.length < 2048 ? body.image : null,
+        ageRequirement: body.ageRequirement || null,
+        draft: body.draft ?? false,
         cancelled: false,
         createdAt: new Date().toISOString(),
       }
@@ -81,6 +100,13 @@ export default async function handler(req) {
           headers: { 'Content-Type': 'application/json' },
         })
       }
+      const v = validateEventInput(body, { partial: true })
+      if (!v.ok) {
+        return new Response(JSON.stringify({ error: v.errors.join('; ') }), {
+          status: 400,
+          headers: { 'Content-Type': 'application/json' },
+        })
+      }
       const updated = {
         ...existing,
         name: body.name ?? existing.name,
@@ -90,7 +116,9 @@ export default async function handler(req) {
         location: body.location ?? existing.location,
         price: body.price ?? existing.price,
         totalTickets: body.totalTickets ?? existing.totalTickets,
-        image: body.image ?? existing.image,
+        image: typeof body.image === 'string' && body.image.length < 2048 ? body.image : existing.image,
+        ageRequirement: 'ageRequirement' in body ? body.ageRequirement : existing.ageRequirement,
+        draft: body.draft ?? existing.draft ?? false,
         cancelled: body.cancelled ?? existing.cancelled,
       }
       await saveEvent(updated)

@@ -1,9 +1,12 @@
-import { FloralDivider } from './Icons'
-import { AboutBotanicals } from './BotanicalBackgrounds'
+import { FloralDivider } from "./Icons";
+import { AboutBotanicals } from "./BotanicalBackgrounds";
 
 export default function About() {
   return (
-    <section id="about" className="relative py-24 md:py-40 bg-cream overflow-hidden">
+    <section
+      id="about"
+      className="relative py-24 md:py-40 bg-cream overflow-hidden"
+    >
       {/* Botanical background layers */}
       <AboutBotanicals />
 
@@ -18,14 +21,16 @@ export default function About() {
               What is Bloom Babe?
             </h2>
             <p className="text-charcoal-light text-base md:text-lg leading-relaxed mb-6 max-w-prose">
-              Bloom Babe is your invitation to slow down, get creative, and share an experience
-              with people who love beautiful things. From floral arrangements to terrariums to
-              paint nights — we host workshops that feel less like a class and more like a
-              get-together with your favorite people.
+              Bloom Babe is your invitation to slow down, get creative, and
+              share an experience with people who love beautiful things. From
+              floral arrangements to terrariums to paint nights — we host
+              workshops that feel less like a class and more like a get-together
+              with your favorite people.
             </p>
             <p className="text-charcoal-light text-base md:text-lg leading-relaxed max-w-prose">
-              Whether you come solo or with your crew, our goal is simple: for you to
-              feel inspired, welcomed, and just a little more like yourself when you leave.
+              Whether you come solo or with your crew, our goal is simple: for
+              you to feel inspired, welcomed, and just a little more like
+              yourself when you leave.
             </p>
           </div>
 
@@ -33,34 +38,66 @@ export default function About() {
           <div className="md:col-span-2 md:pt-16">
             <FloralDivider className="w-24 text-gold/60 mb-6" />
             <blockquote className="font-serif text-2xl md:text-3xl text-charcoal leading-snug">
-              Get your hands a little dirty. Laugh with strangers who become friends.
-              <span className="block italic text-gold-dark mt-2">Walk away recharged.</span>
+              Get your hands a little dirty. Laugh with strangers who become
+              friends.
+              <span className="block italic text-gold-dark mt-2">
+                Walk away recharged.
+              </span>
             </blockquote>
           </div>
         </div>
 
         {/* Values — three-stage botanical journey: Create → Connect → Recharge */}
         <div className="relative grid md:grid-cols-3 gap-px bg-gold/10 rounded-xl overflow-hidden">
-          <div className="bg-cream p-8 md:p-10">
-            <span className="font-serif text-lg text-charcoal">Create</span>
-            <p className="text-charcoal-light text-sm leading-relaxed mt-2">
-              Get your hands a little dirty and walk away with something you made yourself.
-            </p>
+          {/* Create */}
+          <div className="relative overflow-hidden bg-cream">
+            <div
+              aria-hidden="true"
+              className="absolute inset-0 bg-no-repeat bg-cover bg-position-[50%_70%] opacity-20 pointer-events-none"
+              style={{ backgroundImage: "url('/images/create-bg.png')" }}
+            />
+            <div className="relative p-8 md:p-10">
+              <span className="font-serif text-lg text-charcoal">Create</span>
+              <p className="text-charcoal-light text-sm leading-relaxed mt-2">
+                Get your hands a little dirty and walk away with something you
+                made yourself.
+              </p>
+            </div>
           </div>
-          <div className="bg-cream p-8 md:p-10">
-            <span className="font-serif text-lg text-charcoal">Connect</span>
-            <p className="text-charcoal-light text-sm leading-relaxed mt-2">
-              Laugh with strangers who become friends in a warm, welcoming space.
-            </p>
+
+          {/* Connect */}
+          <div className="relative overflow-hidden bg-cream">
+            <div
+              aria-hidden="true"
+              className="absolute inset-0 bg-no-repeat bg-cover bg-center opacity-20 pointer-events-none"
+              style={{ backgroundImage: "url('/images/connect-bg.png')" }}
+            />
+            <div className="relative p-8 md:p-10">
+              <span className="font-serif text-lg text-charcoal">Connect</span>
+              <p className="text-charcoal-light text-sm leading-relaxed mt-2">
+                Laugh with strangers who become friends in a warm, welcoming
+                space.
+              </p>
+            </div>
           </div>
-          <div className="bg-cream p-8 md:p-10">
-            <span className="font-serif text-lg text-charcoal">Recharge</span>
-            <p className="text-charcoal-light text-sm leading-relaxed mt-2">
-              Step away from the everyday and feel a little more like yourself when you leave.
-            </p>
+
+          {/* Recharge */}
+          <div className="relative overflow-hidden bg-cream">
+            <div
+              aria-hidden="true"
+              className="absolute inset-0 bg-no-repeat bg-cover bg-position-[50%_70%] opacity-20 pointer-events-none"
+              style={{ backgroundImage: "url('/images/recharge-bg.png')" }}
+            />
+            <div className="relative p-8 md:p-10">
+              <span className="font-serif text-lg text-charcoal">Recharge</span>
+              <p className="text-charcoal-light text-sm leading-relaxed mt-2">
+                Step away from the everyday and feel a little more like yourself
+                when you leave.
+              </p>
+            </div>
           </div>
         </div>
       </div>
     </section>
-  )
+  );
 }

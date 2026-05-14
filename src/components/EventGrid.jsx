@@ -8,21 +8,21 @@ import { fetchEvents } from '../lib/api'
 const DEMO_EVENTS = [
   {
     id: 'demo-1',
-    name: 'Spring Floral Arrangement Workshop',
-    type: 'floral',
-    image: import.meta.env.BASE_URL + 'Floral_Arrangement.jpg',
-    date: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString(),
-    location: 'The Garden Room, Downtown',
-    price: 65,
-    totalTickets: 20,
-    soldTickets: 14,
-    description: 'Create a stunning seasonal arrangement using fresh spring blooms. All materials provided — just bring your creativity and a friend!',
+    name: 'Plant Bingo',
+    type: 'plant-games',
+    image: '/Floral_Arrangement.jpg',
+    date: new Date('2026-06-27T19:00:00').toISOString(),
+    location: 'Iconic Venue, Boise',
+    price: 25,
+    totalTickets: 30,
+    soldTickets: 0,
+    description: 'It\'s bingo — but make it botanical. Win plants and prizes while sipping your favorite drink. 21+ event.',
   },
   {
     id: 'demo-2',
     name: 'Paint & Sip: Botanical Edition',
     type: 'paint-night',
-    image: import.meta.env.BASE_URL + 'Paint_Night.jpg',
+    image: '/Paint_Night.jpg',
     date: new Date(Date.now() + 14 * 24 * 60 * 60 * 1000).toISOString(),
     location: 'Bloom Studio',
     price: 45,
@@ -34,7 +34,7 @@ const DEMO_EVENTS = [
     id: 'demo-3',
     name: 'Terrarium Building Night',
     type: 'terrarium',
-    image: import.meta.env.BASE_URL + 'Terrarium.jpg',
+    image: '/Terrarium.jpg',
     date: new Date(Date.now() + 21 * 24 * 60 * 60 * 1000).toISOString(),
     location: 'The Garden Room, Downtown',
     price: 55,
@@ -45,22 +45,30 @@ const DEMO_EVENTS = [
 ]
 
 export default function EventGrid({ limit, showHeader = true }) {
-  const [events, setEvents] = useState(DEMO_EVENTS)
-  const [loading, setLoading] = useState(false)
+  const isDev = import.meta.env.DEV
+  const [events, setEvents] = useState(isDev ? DEMO_EVENTS : [])
+  const [loading, setLoading] = useState(true)
+  const [fetchFailed, setFetchFailed] = useState(false)
 
   useEffect(() => {
+    let cancelled = false
     setLoading(true)
     fetchEvents()
       .then((data) => {
-        if (data && data.length > 0) {
-          setEvents(data)
-        }
+        if (cancelled) return
+        setEvents(Array.isArray(data) ? data : [])
+        setFetchFailed(false)
       })
-      .catch(() => {
-        // Use demo events if API is not available
+      .catch((err) => {
+        if (cancelled) return
+        console.error('[EventGrid] failed to load events:', err)
+        setFetchFailed(true)
+        // In dev, fall back to demo events so the UI still renders.
+        if (isDev) setEvents(DEMO_EVENTS)
       })
-      .finally(() => setLoading(false))
-  }, [])
+      .finally(() => { if (!cancelled) setLoading(false) })
+    return () => { cancelled = true }
+  }, [isDev])
 
   const displayEvents = limit ? events.slice(0, limit) : events
 
@@ -102,8 +110,23 @@ export default function EventGrid({ limit, showHeader = true }) {
         ) : displayEvents.length === 0 ? (
           <div className="text-center py-16">
             <FlowerIcon className="w-16 h-16 text-gold/30 mx-auto mb-4" />
-            <h3 className="font-serif text-xl text-charcoal mb-2">No upcoming events</h3>
-            <p className="text-charcoal-light">Check back soon — new workshops are always in the works!</p>
+            {fetchFailed ? (
+              <>
+                <h3 className="font-serif text-xl text-charcoal mb-2">We couldn't load events just now</h3>
+                <p className="text-charcoal-light mb-5">Give it a moment and refresh, or try again in a bit.</p>
+                <button
+                  onClick={() => window.location.reload()}
+                  className="px-5 py-2 rounded-full bg-charcoal text-cream font-medium text-sm hover:bg-charcoal-light transition-colors"
+                >
+                  Try again
+                </button>
+              </>
+            ) : (
+              <>
+                <h3 className="font-serif text-xl text-charcoal mb-2">No upcoming events</h3>
+                <p className="text-charcoal-light">Check back soon — new workshops are always in the works!</p>
+              </>
+            )}
           </div>
         ) : (
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">

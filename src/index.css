@@ -30,6 +30,11 @@ body {
   -moz-osx-font-smoothing: grayscale;
 }
 
+/* Long words and URLs break gracefully instead of overflowing their container */
+p, h1, h2, h3, h4, h5, h6, li {
+  overflow-wrap: break-word;
+}
+
 h1, h2, h3, h4, h5 {
   font-family: var(--font-serif);
 }
@@ -102,13 +107,15 @@ html {
   animation-delay: -8s;
 }
 
-/* Respect reduced motion */
+/* Respect reduced motion — kill all animation, transitions, and smooth scroll */
 @media (prefers-reduced-motion: reduce) {
-  .botanical-sway,
-  .botanical-sway-slow,
-  .botanical-float,
-  .botanical-float-delayed {
-    animation: none;
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
   }
 }
 

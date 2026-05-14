@@ -266,6 +266,22 @@ export function ChevronDownIcon({ className = '' }) {
   )
 }
 
+export function ChevronLeftIcon({ className = '' }) {
+  return (
+    <svg viewBox="0 0 24 24" className={className} fill="none" stroke="currentColor" strokeWidth="1.5" xmlns="http://www.w3.org/2000/svg">
+      <path d="M15 6L9 12L15 18" strokeLinecap="round" strokeLinejoin="round" />
+    </svg>
+  )
+}
+
+export function ChevronRightIcon({ className = '' }) {
+  return (
+    <svg viewBox="0 0 24 24" className={className} fill="none" stroke="currentColor" strokeWidth="1.5" xmlns="http://www.w3.org/2000/svg">
+      <path d="M9 6L15 12L9 18" strokeLinecap="round" strokeLinejoin="round" />
+    </svg>
+  )
+}
+
 export function FloralCorner({ className = '' }) {
   return (
     <svg viewBox="0 0 80 80" className={className} fill="none" stroke="currentColor" strokeWidth="0.6" opacity="0.3" xmlns="http://www.w3.org/2000/svg">

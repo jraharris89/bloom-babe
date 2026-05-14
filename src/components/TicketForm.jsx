@@ -7,6 +7,7 @@ export default function TicketForm({ event }) {
   const [quantity, setQuantity] = useState(1)
   const [buyer, setBuyer] = useState({ firstName: '', lastName: '', email: '' })
   const [attendees, setAttendees] = useState([])
+  const [promoCode, setPromoCode] = useState('')
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
 
@@ -36,32 +37,36 @@ export default function TicketForm({ event }) {
     setAttendees(updated)
   }
 
-  const isValid = () => {
-    if (!buyer.firstName.trim() || !buyer.lastName.trim() || !buyer.email.trim()) return false
-    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(buyer.email)) return false
-    for (const att of attendees) {
-      if (!att.firstName.trim() || !att.lastName.trim() || !att.email.trim()) return false
-      if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(att.email)) return false
-    }
-    return true
-  }
+  const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+  const validPerson = (p) =>
+    p && p.firstName.trim() && p.lastName.trim() && EMAIL_RE.test(p.email.trim())
+
+  const isValid = () => validPerson(buyer) && attendees.every(validPerson)
 
   const handleSubmit = async (e) => {
     e.preventDefault()
+    if (loading) return
     if (!isValid()) {
-      setError('Please fill in all fields with valid information.')
+      setError('Please fill in every name and email.')
       return
     }
 
     setLoading(true)
     setError('')
 
+    const normalize = (p) => ({
+      firstName: p.firstName.trim(),
+      lastName: p.lastName.trim(),
+      email: p.email.trim().toLowerCase(),
+    })
+
     try {
       const { url } = await createCheckoutSession({
         eventId: event.id,
         quantity,
-        buyer,
-        attendees,
+        buyer: normalize(buyer),
+        attendees: attendees.map(normalize),
+        promoCode: promoCode.trim() || undefined,
       })
       window.location.href = url
     } catch (err) {
@@ -80,7 +85,7 @@ export default function TicketForm({ event }) {
   }
 
   return (
-    <form onSubmit={handleSubmit} className="bg-white rounded-2xl border border-gold/10 p-6 md:p-8">
+    <form onSubmit={handleSubmit} noValidate className="bg-white rounded-2xl border border-gold/10 p-6 md:p-8">
       <h3 className="font-serif text-xl text-charcoal mb-6">Get Your Tickets</h3>
 
       {/* Quantity selector */}
@@ -140,6 +145,9 @@ export default function TicketForm({ event }) {
               type="text"
               value={buyer.firstName}
               onChange={(e) => setBuyer({ ...buyer, firstName: e.target.value })}
+              autoComplete="given-name"
+              autoCapitalize="words"
+              maxLength={100}
               className="w-full px-4 py-2.5 rounded-lg border border-gold/15 bg-cream/50 text-charcoal text-sm focus:outline-none focus:border-gold/40 focus:ring-1 focus:ring-gold/20 transition-colors"
               required
             />
@@ -151,6 +159,9 @@ export default function TicketForm({ event }) {
               type="text"
               value={buyer.lastName}
               onChange={(e) => setBuyer({ ...buyer, lastName: e.target.value })}
+              autoComplete="family-name"
+              autoCapitalize="words"
+              maxLength={100}
               className="w-full px-4 py-2.5 rounded-lg border border-gold/15 bg-cream/50 text-charcoal text-sm focus:outline-none focus:border-gold/40 focus:ring-1 focus:ring-gold/20 transition-colors"
               required
             />
@@ -163,6 +174,12 @@ export default function TicketForm({ event }) {
             type="email"
             value={buyer.email}
             onChange={(e) => setBuyer({ ...buyer, email: e.target.value })}
+            autoComplete="email"
+            inputMode="email"
+            autoCapitalize="off"
+            autoCorrect="off"
+            spellCheck="false"
+            maxLength={254}
             className="w-full px-4 py-2.5 rounded-lg border border-gold/15 bg-cream/50 text-charcoal text-sm focus:outline-none focus:border-gold/40 focus:ring-1 focus:ring-gold/20 transition-colors"
             required
           />
@@ -186,6 +203,9 @@ export default function TicketForm({ event }) {
                 type="text"
                 value={att.firstName}
                 onChange={(e) => updateAttendee(i, 'firstName', e.target.value)}
+                autoComplete="off"
+                autoCapitalize="words"
+                maxLength={100}
                 className="w-full px-4 py-2.5 rounded-lg border border-gold/15 bg-cream/50 text-charcoal text-sm focus:outline-none focus:border-gold/40 focus:ring-1 focus:ring-gold/20 transition-colors"
                 required
               />
@@ -197,6 +217,9 @@ export default function TicketForm({ event }) {
                 type="text"
                 value={att.lastName}
                 onChange={(e) => updateAttendee(i, 'lastName', e.target.value)}
+                autoComplete="off"
+                autoCapitalize="words"
+                maxLength={100}
                 className="w-full px-4 py-2.5 rounded-lg border border-gold/15 bg-cream/50 text-charcoal text-sm focus:outline-none focus:border-gold/40 focus:ring-1 focus:ring-gold/20 transition-colors"
                 required
               />
@@ -209,6 +232,12 @@ export default function TicketForm({ event }) {
               type="email"
               value={att.email}
               onChange={(e) => updateAttendee(i, 'email', e.target.value)}
+              autoComplete="off"
+              inputMode="email"
+              autoCapitalize="off"
+              autoCorrect="off"
+              spellCheck="false"
+              maxLength={254}
               className="w-full px-4 py-2.5 rounded-lg border border-gold/15 bg-cream/50 text-charcoal text-sm focus:outline-none focus:border-gold/40 focus:ring-1 focus:ring-gold/20 transition-colors"
               required
             />
@@ -216,8 +245,30 @@ export default function TicketForm({ event }) {
         </div>
       ))}
 
+      {/* Promo code */}
+      <div className="mb-6">
+        <label htmlFor="promo-code" className="block text-xs tracking-[0.15em] uppercase text-charcoal-light mb-2 font-sans font-medium">
+          Promo Code <span className="normal-case tracking-normal opacity-60">(optional)</span>
+        </label>
+        <input
+          id="promo-code"
+          type="text"
+          value={promoCode}
+          onChange={(e) => setPromoCode(e.target.value.toUpperCase())}
+          placeholder="Enter code"
+          autoComplete="off"
+          autoCapitalize="characters"
+          maxLength={64}
+          className="w-full px-4 py-2.5 rounded-lg border border-gold/15 bg-cream/50 text-charcoal text-sm focus:outline-none focus:border-gold/40 focus:ring-1 focus:ring-gold/20 transition-colors uppercase placeholder:normal-case placeholder:opacity-40"
+        />
+      </div>
+
       {error && (
-        <div className="mb-4 p-3 rounded-lg bg-rose/10 border border-rose/20 text-sm text-rose-800">
+        <div
+          role="alert"
+          aria-live="polite"
+          className="mb-4 p-3 rounded-lg bg-rose/10 border border-rose/20 text-sm text-rose-800"
+        >
           {error}
         </div>
       )}
@@ -244,7 +295,8 @@ export default function TicketForm({ event }) {
           You'll receive a confirmation email with your ticket details and event info right after checkout.
         </p>
         <p className="text-xs text-charcoal-light/60">
-          Need to cancel? Email us at <a href="mailto:hello@bloombabe.com" className="text-gold-dark hover:underline">hello@bloombabe.com</a> up to 48 hours before the event for a full refund.
+          All ticket sales are non-refundable. Questions? Email us at{' '}
+          <a href="mailto:Idahobloombabe@gmail.com" className="text-gold-dark hover:underline">Idahobloombabe@gmail.com</a>
         </p>
         <p className="text-xs text-charcoal-light/40 text-center mt-2">
           Secure checkout powered by Stripe

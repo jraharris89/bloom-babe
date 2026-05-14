@@ -10,21 +10,22 @@ import { fetchEvent } from '../lib/api'
 const DEMO_EVENTS = {
   'demo-1': {
     id: 'demo-1',
-    name: 'Spring Floral Arrangement Workshop',
-    type: 'floral',
-    image: import.meta.env.BASE_URL + 'Floral_Arrangement.jpg',
-    date: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString(),
-    location: 'The Garden Room, Downtown',
-    price: 65,
-    totalTickets: 20,
-    soldTickets: 14,
-    description: 'Create a stunning seasonal arrangement using fresh spring blooms. All materials provided — just bring your creativity and a friend!\n\nIn this 2-hour workshop, you\'ll learn the fundamentals of floral design while building a gorgeous centerpiece you can take home. Our experienced instructor will guide you through color theory, stem cutting techniques, and arrangement principles.\n\nWhat\'s included:\n- All flowers and greenery\n- Vase to take home\n- Light refreshments\n- A great time with great people',
+    name: 'Plant Bingo',
+    type: 'plant-games',
+    image: '/Floral_Arrangement.jpg',
+    date: new Date('2026-06-27T19:00:00').toISOString(),
+    location: 'Iconic Venue, Boise',
+    price: 25,
+    totalTickets: 30,
+    soldTickets: 0,
+    ageRequirement: 21,
+    description: 'It\'s bingo — but make it botanical. Win plants and prizes while sipping your favorite drink.\n\nThis is our very first Bloom Babe event and we are SO excited to kick things off with a night of plant bingo! Play for a chance to win beautiful plants, hang with great people, and laugh a lot.\n\nWhat\'s included:\n- Bingo cards + daubers\n- Plant and prize giveaways\n- Good vibes all night\n\n21+ event. Please verify your age at the door. Must be 21 or older to attend.',
   },
   'demo-2': {
     id: 'demo-2',
     name: 'Paint & Sip: Botanical Edition',
     type: 'paint-night',
-    image: import.meta.env.BASE_URL + 'Paint_Night.jpg',
+    image: '/Paint_Night.jpg',
     date: new Date(Date.now() + 14 * 24 * 60 * 60 * 1000).toISOString(),
     location: 'Bloom Studio',
     price: 45,
@@ -36,7 +37,7 @@ const DEMO_EVENTS = {
     id: 'demo-3',
     name: 'Terrarium Building Night',
     type: 'terrarium',
-    image: import.meta.env.BASE_URL + 'Terrarium.jpg',
+    image: '/Terrarium.jpg',
     date: new Date(Date.now() + 21 * 24 * 60 * 60 * 1000).toISOString(),
     location: 'The Garden Room, Downtown',
     price: 55,
@@ -50,18 +51,22 @@ export default function EventDetail() {
   const { id } = useParams()
   const [event, setEvent] = useState(null)
   const [loading, setLoading] = useState(true)
+  const isDev = import.meta.env.DEV
 
   useEffect(() => {
+    let cancelled = false
+    setLoading(true)
     fetchEvent(id)
-      .then(setEvent)
-      .catch(() => {
-        // Fall back to demo data
-        if (DEMO_EVENTS[id]) {
-          setEvent(DEMO_EVENTS[id])
-        }
+      .then((data) => { if (!cancelled) setEvent(data) })
+      .catch((err) => {
+        if (cancelled) return
+        console.error('[EventDetail] failed to load event:', err)
+        // Only fall back to demo data in development.
+        if (isDev && DEMO_EVENTS[id]) setEvent(DEMO_EVENTS[id])
       })
-      .finally(() => setLoading(false))
-  }, [id])
+      .finally(() => { if (!cancelled) setLoading(false) })
+    return () => { cancelled = true }
+  }, [id, isDev])
 
   if (loading) {
     return (
@@ -115,7 +120,12 @@ export default function EventDetail() {
             {/* Hero image / placeholder */}
             <div className="relative h-64 md:h-80 bg-gradient-to-br from-cream-dark to-cream rounded-2xl overflow-hidden mb-8 border border-gold/10">
               {event.image ? (
-                <img src={event.image} alt={event.name} className="w-full h-full object-cover" />
+                <img
+                  src={event.image}
+                  alt={event.name}
+                  decoding="async"
+                  className="w-full h-full object-cover"
+                />
               ) : (
                 <div className="w-full h-full flex items-center justify-center">
                   <EventIcon className={`w-28 h-28 text-${eventType.color} opacity-20`} />
@@ -149,10 +159,15 @@ export default function EventDetail() {
                 <TicketIcon className="w-4 h-4 text-gold/70 shrink-0" />
                 <span>${event.price} per person</span>
               </div>
+              {event.ageRequirement && (
+                <div className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-charcoal/5 border border-charcoal/10 text-xs font-medium text-charcoal mt-1">
+                  {event.ageRequirement}+ Event — Valid ID required at the door
+                </div>
+              )}
             </div>
 
             <div className="prose prose-sm max-w-none">
-              {event.description.split('\n').map((line, i) => (
+              {(event.description || '').split('\n').map((line, i) => (
                 line.trim() ? (
                   <p key={i} className="text-charcoal-light leading-relaxed mb-3">{line}</p>
                 ) : (

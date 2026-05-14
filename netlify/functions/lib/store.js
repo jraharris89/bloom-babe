@@ -33,6 +33,35 @@ export async function saveEvent(event) {
   return event
 }
 
+export async function incrementSoldTickets(eventId, delta, { maxAttempts = 5 } = {}) {
+  const store = eventsStore()
+  for (let attempt = 0; attempt < maxAttempts; attempt++) {
+    const result = await store.getWithMetadata(eventId, { type: 'json' })
+    const event = result?.data
+    if (!event) return { ok: false, reason: 'not-found' }
+
+    const currentSold = event.soldTickets ?? 0
+    const nextSold = currentSold + delta
+    if (nextSold > event.totalTickets) {
+      return { ok: false, reason: 'sold-out', event }
+    }
+
+    const next = { ...event, soldTickets: nextSold }
+    try {
+      await store.setJSON(eventId, next, {
+        onlyIfMatch: result?.etag,
+      })
+      return { ok: true, event: next }
+    } catch (err) {
+      if (err?.name === 'BlobsConsistencyError' || /precondition/i.test(err?.message || '')) {
+        continue
+      }
+      throw err
+    }
+  }
+  return { ok: false, reason: 'contention' }
+}
+
 export async function deleteEvent(id) {
   const store = eventsStore()
   await store.delete(id)

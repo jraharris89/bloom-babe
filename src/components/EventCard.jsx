@@ -31,7 +31,13 @@ export default function EventCard({ event }) {
       {/* Image area with event type icon */}
       <div className="relative h-52 bg-linear-to-br from-cream-dark to-cream overflow-hidden">
         {event.image ? (
-          <img src={event.image} alt={event.name} className="w-full h-full object-cover" />
+          <img
+            src={event.image}
+            alt={event.name}
+            loading="lazy"
+            decoding="async"
+            className="w-full h-full object-cover"
+          />
         ) : (
           <div className="w-full h-full flex items-center justify-center">
             <EventIcon className={`w-20 h-20 text-${eventType.color} opacity-30`} />
@@ -42,7 +48,14 @@ export default function EventCard({ event }) {
             <EventIcon className="w-3.5 h-3.5" />
             {eventType.label}
           </span>
-          <StatusBadge totalTickets={event.totalTickets} soldTickets={event.soldTickets} />
+          <div className="flex items-center gap-1.5">
+            {event.ageRequirement && (
+              <span className="px-2 py-1 rounded-full bg-charcoal/80 backdrop-blur-sm text-xs font-medium text-white leading-none">
+                {event.ageRequirement}+
+              </span>
+            )}
+            <StatusBadge totalTickets={event.totalTickets} soldTickets={event.soldTickets} />
+          </div>
         </div>
       </div>
 
