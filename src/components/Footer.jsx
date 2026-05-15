@@ -67,7 +67,12 @@ export default function Footer() {
           </div>
         </div>
 
-        <div className="border-t border-cream/10 pt-8 text-center">
+        <div className="border-t border-cream/10 pt-8 text-center space-y-2">
+          <div className="flex items-center justify-center gap-4 text-cream/40 text-xs">
+            <Link to="/privacy" className="hover:text-cream transition-colors">Privacy Policy</Link>
+            <span>·</span>
+            <Link to="/terms" className="hover:text-cream transition-colors">Terms of Service</Link>
+          </div>
           <p className="text-cream/30 text-xs">
             &copy; {new Date().getFullYear()} Bloom Babe Floral & Events. All rights reserved.
           </p>

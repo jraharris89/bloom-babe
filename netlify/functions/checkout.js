@@ -1,5 +1,5 @@
 import Stripe from 'stripe'
-import { getEvent } from './lib/store.js'
+import { getEvent, getPromoCode, incrementPromoUses } from './lib/store.js'
 import { LIMITS, validatePerson } from './lib/validate.js'
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY)
@@ -13,7 +13,7 @@ export default async function handler(req) {
   }
 
   try {
-    const { eventId, quantity: rawQty, buyer, attendees } = await req.json()
+    const { eventId, quantity: rawQty, buyer, attendees, promoCode: rawPromo } = await req.json()
 
     if (typeof eventId !== 'string' || !eventId) {
       return new Response(JSON.stringify({ message: 'Missing eventId' }), {
@@ -83,6 +83,34 @@ export default async function handler(req) {
       })
     }
 
+    // Validate promo code if provided
+    let appliedPromo = null
+    let unitPrice = event.price
+    if (rawPromo && typeof rawPromo === 'string' && rawPromo.trim()) {
+      const promo = await getPromoCode(rawPromo.trim())
+      if (!promo || !promo.active) {
+        return new Response(JSON.stringify({ message: 'That promo code is not valid.' }), {
+          status: 400, headers: { 'Content-Type': 'application/json' },
+        })
+      }
+      if (promo.maxUses && promo.timesUsed >= promo.maxUses) {
+        return new Response(JSON.stringify({ message: 'That promo code has been fully redeemed.' }), {
+          status: 400, headers: { 'Content-Type': 'application/json' },
+        })
+      }
+      if (promo.eventId && promo.eventId !== eventId) {
+        return new Response(JSON.stringify({ message: 'That promo code is not valid for this event.' }), {
+          status: 400, headers: { 'Content-Type': 'application/json' },
+        })
+      }
+      if (promo.discountType === 'percent') {
+        unitPrice = Math.round(event.price * (1 - promo.discountValue / 100) * 100) / 100
+      } else {
+        unitPrice = Math.max(0, event.price - promo.discountValue)
+      }
+      appliedPromo = promo
+    }
+
     const allAttendees = [
       { ...cleanBuyer, isBuyer: true },
       ...cleanAdditional.map(a => ({ ...a, isBuyer: false })),
@@ -112,9 +140,9 @@ export default async function handler(req) {
           currency: 'usd',
           product_data: {
             name: event.name.slice(0, 250),
-            description: `${qty} ticket${qty > 1 ? 's' : ''} — ${dateLabel}`,
+            description: `${qty} ticket${qty > 1 ? 's' : ''} — ${dateLabel}${appliedPromo ? ` (promo: ${appliedPromo.code})` : ''}`,
           },
-          unit_amount: Math.round(event.price * 100),
+          unit_amount: Math.round(unitPrice * 100),
         },
         quantity: qty,
       }],
@@ -125,8 +153,13 @@ export default async function handler(req) {
         eventId,
         quantity: String(qty),
         attendees: attendeesJson,
+        ...(appliedPromo ? { promoCode: appliedPromo.code } : {}),
       },
     })
+
+    if (appliedPromo) {
+      await incrementPromoUses(appliedPromo.code)
+    }
 
     return new Response(JSON.stringify({ url: session.url }), {
       headers: { 'Content-Type': 'application/json' },

@@ -78,6 +78,48 @@ export async function saveAttendees(eventId, purchaseId, attendeeList) {
   })
 }
 
+// ── Promo Codes ──
+
+function promoStore() {
+  return getStore({ name: 'promo-codes', consistency: 'strong' })
+}
+
+export async function listPromoCodes() {
+  const store = promoStore()
+  const { blobs } = await store.list()
+  const codes = await Promise.all(
+    blobs.map(async (blob) => store.get(blob.key, { type: 'json' }))
+  )
+  return codes.filter(Boolean)
+}
+
+export async function getPromoCode(code) {
+  const store = promoStore()
+  return store.get(code.toUpperCase(), { type: 'json' })
+}
+
+export async function savePromoCode(promo) {
+  const store = promoStore()
+  const key = promo.code.toUpperCase()
+  await store.setJSON(key, { ...promo, code: key })
+  return promo
+}
+
+export async function deletePromoCode(code) {
+  const store = promoStore()
+  await store.delete(code.toUpperCase())
+}
+
+export async function incrementPromoUses(code) {
+  const store = promoStore()
+  const key = code.toUpperCase()
+  const promo = await store.get(key, { type: 'json' })
+  if (!promo) return null
+  promo.timesUsed = (promo.timesUsed || 0) + 1
+  await store.setJSON(key, promo)
+  return promo
+}
+
 export async function getAttendees(eventId) {
   const store = attendeesStore()
   const { blobs } = await store.list({ prefix: `${eventId}/` })

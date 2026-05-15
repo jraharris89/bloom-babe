@@ -2,6 +2,7 @@ import { Link } from 'react-router-dom'
 import { CalendarIcon, LocationIcon, TicketIcon, ArrowRightIcon } from './Icons'
 import StatusBadge, { getTicketStatus } from './StatusBadge'
 import { getEventType } from '../lib/eventTypes'
+import { normalizeImageUrl } from '../lib/imageUrl'
 
 export default function EventCard({ event }) {
   const eventType = getEventType(event.type)
@@ -32,7 +33,7 @@ export default function EventCard({ event }) {
       <div className="relative h-52 bg-linear-to-br from-cream-dark to-cream overflow-hidden">
         {event.image ? (
           <img
-            src={event.image}
+            src={normalizeImageUrl(event.image)}
             alt={event.name}
             loading="lazy"
             decoding="async"

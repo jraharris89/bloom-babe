@@ -1,6 +1,8 @@
 import { useState, useEffect } from 'react'
 import { useParams, Link } from 'react-router-dom'
-import { CalendarIcon, LocationIcon, TicketIcon, ArrowRightIcon, FlowerIcon } from '../components/Icons'
+import { CalendarIcon, LocationIcon, TicketIcon, ArrowRightIcon, FlowerIcon, DownloadIcon } from '../components/Icons'
+import { downloadICS } from '../lib/ics'
+import { normalizeImageUrl } from '../lib/imageUrl'
 import StatusBadge from '../components/StatusBadge'
 import TicketForm from '../components/TicketForm'
 import { getEventType } from '../lib/eventTypes'
@@ -121,7 +123,7 @@ export default function EventDetail() {
             <div className="relative h-64 md:h-80 bg-gradient-to-br from-cream-dark to-cream rounded-2xl overflow-hidden mb-8 border border-gold/10">
               {event.image ? (
                 <img
-                  src={event.image}
+                  src={normalizeImageUrl(event.image)}
                   alt={event.name}
                   decoding="async"
                   className="w-full h-full object-cover"
@@ -165,6 +167,15 @@ export default function EventDetail() {
                 </div>
               )}
             </div>
+
+            <button
+              type="button"
+              onClick={() => downloadICS(event)}
+              className="inline-flex items-center gap-2 px-4 py-2 rounded-full border border-gold/20 text-charcoal text-sm font-medium hover:bg-gold/10 transition-colors mb-8"
+            >
+              <DownloadIcon className="w-4 h-4 text-gold" />
+              Add to Calendar
+            </button>
 
             <div className="prose prose-sm max-w-none">
               {(event.description || '').split('\n').map((line, i) => (

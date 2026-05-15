@@ -1,5 +1,5 @@
 import { createToken, requireAuth } from './lib/auth.js'
-import { listEvents, getEvent, saveEvent, deleteEvent, getAttendees } from './lib/store.js'
+import { listEvents, getEvent, saveEvent, deleteEvent, getAttendees, listPromoCodes, savePromoCode, deletePromoCode } from './lib/store.js'
 import { validateEventInput } from './lib/validate.js'
 import crypto from 'crypto'
 
@@ -18,6 +18,13 @@ export default async function handler(req) {
       const eventId = url.searchParams.get('eventId')
       const attendees = await getAttendees(eventId)
       return new Response(JSON.stringify(attendees), {
+        headers: { 'Content-Type': 'application/json' },
+      })
+    }
+
+    if (action === 'promo-codes') {
+      const codes = await listPromoCodes()
+      return new Response(JSON.stringify(codes), {
         headers: { 'Content-Type': 'application/json' },
       })
     }
@@ -129,6 +136,74 @@ export default async function handler(req) {
 
     if (action === 'delete') {
       await deleteEvent(body.id)
+      return new Response(JSON.stringify({ success: true }), {
+        headers: { 'Content-Type': 'application/json' },
+      })
+    }
+
+    if (action === 'create-promo') {
+      const code = (body.code || '').trim().toUpperCase()
+      if (!code || code.length > 64) {
+        return new Response(JSON.stringify({ error: 'Promo code is required (max 64 characters)' }), {
+          status: 400, headers: { 'Content-Type': 'application/json' },
+        })
+      }
+      const discountType = body.discountType === 'fixed' ? 'fixed' : 'percent'
+      const discountValue = Number(body.discountValue)
+      if (!Number.isFinite(discountValue) || discountValue <= 0) {
+        return new Response(JSON.stringify({ error: 'Discount value must be a positive number' }), {
+          status: 400, headers: { 'Content-Type': 'application/json' },
+        })
+      }
+      if (discountType === 'percent' && discountValue > 100) {
+        return new Response(JSON.stringify({ error: 'Percent discount cannot exceed 100%' }), {
+          status: 400, headers: { 'Content-Type': 'application/json' },
+        })
+      }
+      const maxUses = body.maxUses ? Number(body.maxUses) : null
+      const promo = {
+        code,
+        discountType,
+        discountValue,
+        maxUses,
+        timesUsed: 0,
+        eventId: body.eventId || null,
+        active: true,
+        createdAt: new Date().toISOString(),
+      }
+      await savePromoCode(promo)
+      return new Response(JSON.stringify(promo), {
+        status: 201, headers: { 'Content-Type': 'application/json' },
+      })
+    }
+
+    if (action === 'update-promo') {
+      const code = (body.code || '').trim().toUpperCase()
+      if (!code) {
+        return new Response(JSON.stringify({ error: 'Promo code is required' }), {
+          status: 400, headers: { 'Content-Type': 'application/json' },
+        })
+      }
+      const existing = await (await import('./lib/store.js')).getPromoCode(code)
+      if (!existing) {
+        return new Response(JSON.stringify({ error: 'Promo code not found' }), {
+          status: 404, headers: { 'Content-Type': 'application/json' },
+        })
+      }
+      const updated = {
+        ...existing,
+        active: body.active ?? existing.active,
+        maxUses: body.maxUses !== undefined ? (body.maxUses ? Number(body.maxUses) : null) : existing.maxUses,
+        eventId: body.eventId !== undefined ? (body.eventId || null) : existing.eventId,
+      }
+      await savePromoCode(updated)
+      return new Response(JSON.stringify(updated), {
+        headers: { 'Content-Type': 'application/json' },
+      })
+    }
+
+    if (action === 'delete-promo') {
+      await deletePromoCode(body.code)
       return new Response(JSON.stringify({ success: true }), {
         headers: { 'Content-Type': 'application/json' },
       })

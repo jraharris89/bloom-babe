@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { Link } from 'react-router-dom'
 import { PlusIcon, MinusIcon, UsersIcon } from './Icons'
 import { createCheckoutSession } from '../lib/api'
 import { getTicketStatus } from './StatusBadge'
@@ -295,11 +296,12 @@ export default function TicketForm({ event }) {
           You'll receive a confirmation email with your ticket details and event info right after checkout.
         </p>
         <p className="text-xs text-charcoal-light/60">
-          All ticket sales are non-refundable. Questions? Email us at{' '}
+          All sales are final. Can't make it? Send a friend — just email us to update the name. Questions?{' '}
           <a href="mailto:Idahobloombabe@gmail.com" className="text-gold-dark hover:underline">Idahobloombabe@gmail.com</a>
         </p>
         <p className="text-xs text-charcoal-light/40 text-center mt-2">
-          Secure checkout powered by Stripe
+          Secure checkout powered by Stripe ·{' '}
+          <Link to="/terms" className="hover:text-charcoal-light transition-colors underline underline-offset-2">Terms</Link>
         </p>
       </div>
     </form>

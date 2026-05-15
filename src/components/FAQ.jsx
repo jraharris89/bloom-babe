@@ -6,8 +6,8 @@ const FAQS = [
     a: 'Most events run about 2 hours — enough time to settle in, create something beautiful, and enjoy good company without it feeling rushed.',
   },
   {
-    q: 'What happens if I miss the event?',
-    a: 'All ticket sales are non-refundable. Life happens, we get it — but unfortunately we\'re unable to offer refunds or transfers. We hope to see you at a future event!',
+    q: 'Can I get a refund?',
+    a: 'As a small business, we pour a lot of love (and supplies!) into prepping for each event, so we\'re not able to offer refunds at this time. We know things come up — if you can\'t make it, feel free to send a friend in your place! Just shoot us an email and we\'ll update the name on your ticket.',
   },
   {
     q: 'Do I need to bring anything?',
@@ -86,7 +86,7 @@ export default function FAQ() {
   return (
     <section id="faq" className="py-10 md:py-14">
       <div className="max-w-3xl mx-auto px-6">
-        <div className="bg-white rounded-2xl border border-gold/10 px-6 md:px-10">
+        <div className="px-6 md:px-10">
           {FAQS.map((item, i) => (
             <FAQItem key={i} q={item.q} a={item.a} />
           ))}
