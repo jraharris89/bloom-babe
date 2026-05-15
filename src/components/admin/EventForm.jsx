@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react'
 import { CloseIcon } from '../Icons'
 import { EVENT_TYPES } from '../../lib/eventTypes'
+import { normalizeImageUrl } from '../../lib/imageUrl'
 
 const defaultForm = {
   name: '',
@@ -254,7 +255,7 @@ export default function EventForm({ event, onSave, onCancel, saving }) {
 
           <Field
             label="Image URL"
-            hint="Upload your photo to Google Photos, Dropbox, or any image hosting site and paste the direct link here."
+            hint="Paste a link to your event photo. Google Drive share links, Dropbox links, and direct image URLs all work — we'll handle the conversion automatically."
           >
             <input
               type="text"
@@ -266,7 +267,7 @@ export default function EventForm({ event, onSave, onCancel, saving }) {
           </Field>
           {form.image && (
             <img
-              src={form.image}
+              src={normalizeImageUrl(form.image)}
               alt="Preview"
               className="w-full h-44 object-cover rounded-xl border border-gold/10"
               onError={(e) => { e.currentTarget.style.display = 'none' }}

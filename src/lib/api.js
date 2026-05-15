@@ -82,6 +82,59 @@ export async function adminDeleteEvent(token, id) {
   return res.json()
 }
 
+export async function adminFetchPromoCodes(token) {
+  const res = await fetch(`${API_BASE}/.netlify/functions/admin-events?action=promo-codes`, {
+    headers: { Authorization: `Bearer ${token}` },
+  })
+  if (!res.ok) throw new Error('Failed to fetch promo codes')
+  return res.json()
+}
+
+export async function adminCreatePromoCode(token, promoData) {
+  const res = await fetch(`${API_BASE}/.netlify/functions/admin-events`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${token}`,
+    },
+    body: JSON.stringify({ action: 'create-promo', ...promoData }),
+  })
+  if (!res.ok) {
+    const err = await res.json()
+    throw new Error(err.error || 'Failed to create promo code')
+  }
+  return res.json()
+}
+
+export async function adminUpdatePromoCode(token, promoData) {
+  const res = await fetch(`${API_BASE}/.netlify/functions/admin-events`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${token}`,
+    },
+    body: JSON.stringify({ action: 'update-promo', ...promoData }),
+  })
+  if (!res.ok) {
+    const err = await res.json()
+    throw new Error(err.error || 'Failed to update promo code')
+  }
+  return res.json()
+}
+
+export async function adminDeletePromoCode(token, code) {
+  const res = await fetch(`${API_BASE}/.netlify/functions/admin-events`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${token}`,
+    },
+    body: JSON.stringify({ action: 'delete-promo', code }),
+  })
+  if (!res.ok) throw new Error('Failed to delete promo code')
+  return res.json()
+}
+
 export async function adminFetchAttendees(token, eventId) {
   const res = await fetch(`${API_BASE}/.netlify/functions/admin-events?action=attendees&eventId=${eventId}`, {
     headers: { Authorization: `Bearer ${token}` },

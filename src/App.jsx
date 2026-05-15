@@ -8,6 +8,8 @@ import EventDetail from './pages/EventDetail'
 import CalendarPage from './pages/CalendarPage'
 import FAQPage from './pages/FAQPage'
 import CheckoutSuccess from './pages/CheckoutSuccess'
+import Privacy from './pages/Privacy'
+import Terms from './pages/Terms'
 import Admin from './pages/Admin'
 import Design1 from './pages/Design1'
 import Design2 from './pages/Design2'
@@ -79,6 +81,8 @@ export default function App() {
           <Route path="/calendar" element={<CalendarPage />} />
           <Route path="/faq" element={<FAQPage />} />
           <Route path="/checkout/success" element={<CheckoutSuccess />} />
+          <Route path="/privacy" element={<Privacy />} />
+          <Route path="/terms" element={<Terms />} />
           <Route path="/admin" element={<Admin />} />
           <Route path="/design1" element={<Design1 />} />
           <Route path="/design2" element={<Design2 />} />

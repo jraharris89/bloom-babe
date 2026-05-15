@@ -1,8 +1,9 @@
 import { useState, useEffect } from 'react'
-import { PlusIcon, EditIcon, TrashIcon, UsersIcon, FlowerIcon, CalendarIcon } from '../Icons'
+import { PlusIcon, EditIcon, TrashIcon, UsersIcon, FlowerIcon, CalendarIcon, TicketIcon } from '../Icons'
 import StatusBadge from '../StatusBadge'
 import EventForm from './EventForm'
 import AttendeeRoster from './AttendeeRoster'
+import PromoCodeManager from './PromoCodeManager'
 import { getEventType } from '../../lib/eventTypes'
 import { adminFetchEvents, adminCreateEvent, adminUpdateEvent, adminDeleteEvent } from '../../lib/api'
 
@@ -13,6 +14,7 @@ export default function AdminDashboard({ token, onLogout }) {
   const [editingEvent, setEditingEvent] = useState(null)
   const [rosterEvent, setRosterEvent] = useState(null)
   const [saving, setSaving] = useState(false)
+  const [activeTab, setActiveTab] = useState('events')
 
   const loadEvents = () => {
     setLoading(true)
@@ -87,8 +89,40 @@ export default function AdminDashboard({ token, onLogout }) {
         </div>
       </div>
 
+      {/* Tabs */}
+      <div className="border-b border-gold/10 bg-white">
+        <div className="max-w-6xl mx-auto px-6 flex gap-6">
+          <button
+            onClick={() => setActiveTab('events')}
+            className={`flex items-center gap-2 py-3 text-sm font-medium border-b-2 transition-colors ${
+              activeTab === 'events'
+                ? 'border-charcoal text-charcoal'
+                : 'border-transparent text-charcoal-light hover:text-charcoal'
+            }`}
+          >
+            <CalendarIcon className="w-4 h-4" />
+            Events
+          </button>
+          <button
+            onClick={() => setActiveTab('promos')}
+            className={`flex items-center gap-2 py-3 text-sm font-medium border-b-2 transition-colors ${
+              activeTab === 'promos'
+                ? 'border-charcoal text-charcoal'
+                : 'border-transparent text-charcoal-light hover:text-charcoal'
+            }`}
+          >
+            <TicketIcon className="w-4 h-4" />
+            Promo Codes
+          </button>
+        </div>
+      </div>
+
       {/* Content */}
       <div className="max-w-6xl mx-auto px-6 py-8">
+        {activeTab === 'promos' ? (
+          <PromoCodeManager token={token} events={events} />
+        ) : (
+        <>
         <div className="flex items-center justify-between mb-8">
           <h2 className="font-serif text-2xl text-charcoal">Events</h2>
           <button
@@ -197,6 +231,8 @@ export default function AdminDashboard({ token, onLogout }) {
               )
             })}
           </div>
+        )}
+      </>
         )}
       </div>
 
