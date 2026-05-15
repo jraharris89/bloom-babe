@@ -128,6 +128,5 @@ export default async function handler() {
 }
 
 export const config = {
-  path: '/.netlify/functions/send-reminders',
   schedule: '0 15 * * *',
 }

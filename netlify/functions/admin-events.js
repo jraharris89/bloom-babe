@@ -1,5 +1,5 @@
 import { createToken, requireAuth } from './lib/auth.js'
-import { listEvents, getEvent, saveEvent, deleteEvent, getAttendees, listPromoCodes, savePromoCode, deletePromoCode } from './lib/store.js'
+import { listEvents, getEvent, saveEvent, deleteEvent, getAttendees, listPromoCodes, getPromoCode, savePromoCode, deletePromoCode } from './lib/store.js'
 import { validateEventInput } from './lib/validate.js'
 import crypto from 'crypto'
 
@@ -184,7 +184,7 @@ export default async function handler(req) {
           status: 400, headers: { 'Content-Type': 'application/json' },
         })
       }
-      const existing = await (await import('./lib/store.js')).getPromoCode(code)
+      const existing = await getPromoCode(code)
       if (!existing) {
         return new Response(JSON.stringify({ error: 'Promo code not found' }), {
           status: 404, headers: { 'Content-Type': 'application/json' },
