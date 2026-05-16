@@ -50,7 +50,10 @@ function Toggle({ enabled, onChange, label, sublabel, danger }) {
 }
 
 const inputClass =
-  'w-full px-4 py-2.5 rounded-lg border border-gold/15 bg-cream/30 text-charcoal text-sm placeholder:text-charcoal-light/40 focus:outline-none focus:border-gold/40 focus:ring-1 focus:ring-gold/20'
+  'w-full px-4 py-2.5 rounded-lg border bg-cream/30 text-charcoal text-sm placeholder:text-charcoal-light/40 focus:outline-none focus:ring-1 transition-colors'
+
+const inputOk = 'border-gold/15 focus:border-gold/40 focus:ring-gold/20'
+const inputErr = 'border-rose-400 bg-rose-50/40 focus:border-rose-400 focus:ring-rose-200'
 
 function SectionHeading({ children }) {
   return (
@@ -60,14 +63,17 @@ function SectionHeading({ children }) {
   )
 }
 
-function Field({ label, hint, children }) {
+function Field({ id, label, hint, error, children }) {
   return (
-    <div>
-      <label className="block text-xs tracking-widest uppercase text-charcoal-light mb-1.5 font-sans font-medium">
+    <div id={id}>
+      <label className={`block text-xs tracking-widest uppercase mb-1.5 font-sans font-medium ${error ? 'text-rose-500' : 'text-charcoal-light'}`}>
         {label}
       </label>
       {children}
-      {hint && <p className="text-xs text-charcoal-light/50 mt-1">{hint}</p>}
+      {error
+        ? <p className="text-xs text-rose-500 mt-1">{error}</p>
+        : hint && <p className="text-xs text-charcoal-light/50 mt-1">{hint}</p>
+      }
     </div>
   )
 }
@@ -76,6 +82,7 @@ export default function EventForm({ event, onSave, onCancel, saving }) {
   const [form, setForm] = useState(defaultForm)
 
   useEffect(() => {
+    setErrors({})
     if (event) {
       const d = new Date(event.date)
       setForm({
@@ -97,10 +104,35 @@ export default function EventForm({ event, onSave, onCancel, saving }) {
     }
   }, [event])
 
-  const update = (field, value) => setForm((f) => ({ ...f, [field]: value }))
+  const [errors, setErrors] = useState({})
+
+  const update = (field, value) => {
+    setForm((f) => ({ ...f, [field]: value }))
+    if (errors[field]) setErrors((e) => ({ ...e, [field]: null }))
+  }
+
+  const validate = () => {
+    const e = {}
+    if (!form.name.trim()) e.name = 'Event name is required'
+    if (!form.description.trim()) e.description = 'Description is required'
+    if (!form.date) e.date = 'Date is required'
+    if (!form.location.trim()) e.location = 'Location is required'
+    const price = parseFloat(form.price)
+    if (form.price === '' || isNaN(price) || price < 0) e.price = 'Enter a valid price (0 or more)'
+    const tickets = parseInt(form.totalTickets, 10)
+    if (!form.totalTickets || isNaN(tickets) || tickets < 1) e.totalTickets = 'Enter a capacity of at least 1'
+    return e
+  }
 
   const handleSubmit = (e) => {
     e.preventDefault()
+    const errs = validate()
+    if (Object.keys(errs).length > 0) {
+      setErrors(errs)
+      const firstKey = Object.keys(errs)[0]
+      document.getElementById(`field-${firstKey}`)?.scrollIntoView({ behavior: 'smooth', block: 'center' })
+      return
+    }
     const dateTime = new Date(`${form.date}T${form.time}`).toISOString()
     onSave({
       name: form.name.trim(),
@@ -135,19 +167,18 @@ export default function EventForm({ event, onSave, onCancel, saving }) {
         </div>
 
         {/* Scrollable body */}
-        <form onSubmit={handleSubmit} className="overflow-y-auto flex-1 px-6 py-5 space-y-4">
+        <form id="event-form" onSubmit={handleSubmit} className="overflow-y-auto flex-1 px-6 py-5 space-y-4">
 
           {/* ── Event Details ── */}
           <SectionHeading>Event Details</SectionHeading>
 
-          <Field label="Event Name">
+          <Field id="field-name" label="Event Name" error={errors.name}>
             <input
               type="text"
               value={form.name}
               onChange={(e) => update('name', e.target.value)}
               placeholder="e.g., Plant Bingo Night"
-              className={inputClass}
-              required
+              className={`${inputClass} ${errors.name ? inputErr : inputOk}`}
             />
           </Field>
 
@@ -164,16 +195,17 @@ export default function EventForm({ event, onSave, onCancel, saving }) {
           </Field>
 
           <Field
+            id="field-description"
             label="Description"
             hint="Each blank line becomes a paragraph break on the event page."
+            error={errors.description}
           >
             <textarea
               value={form.description}
               onChange={(e) => update('description', e.target.value)}
               placeholder={`Tell people what to expect!\n\nWhat's included? What should they know before they come?`}
               rows={6}
-              className={`${inputClass} resize-none`}
-              required
+              className={`${inputClass} ${errors.description ? inputErr : inputOk} resize-none`}
             />
           </Field>
 
@@ -181,13 +213,12 @@ export default function EventForm({ event, onSave, onCancel, saving }) {
           <SectionHeading>Date & Location</SectionHeading>
 
           <div className="grid grid-cols-2 gap-3">
-            <Field label="Date">
+            <Field id="field-date" label="Date" error={errors.date}>
               <input
                 type="date"
                 value={form.date}
                 onChange={(e) => update('date', e.target.value)}
-                className={inputClass}
-                required
+                className={`${inputClass} ${errors.date ? inputErr : inputOk}`}
               />
             </Field>
             <Field label="Start Time">
@@ -202,15 +233,17 @@ export default function EventForm({ event, onSave, onCancel, saving }) {
           </div>
 
           <Field
+            id="field-location"
             label="Venue / Location"
             hint="Include the venue name and address so guests know exactly where to go."
+            error={errors.location}
           >
             <input
               type="text"
               value={form.location}
               onChange={(e) => update('location', e.target.value)}
               placeholder="e.g., Iconic Venue — 123 Main St, Boise"
-              className={inputClass}
+              className={`${inputClass} ${errors.location ? inputErr : inputOk}`}
             />
           </Field>
 
@@ -225,7 +258,7 @@ export default function EventForm({ event, onSave, onCancel, saving }) {
           <SectionHeading>Tickets & Pricing</SectionHeading>
 
           <div className="grid grid-cols-2 gap-3">
-            <Field label="Ticket Price ($)">
+            <Field id="field-price" label="Ticket Price ($)" error={errors.price}>
               <input
                 type="number"
                 min="0"
@@ -233,19 +266,17 @@ export default function EventForm({ event, onSave, onCancel, saving }) {
                 value={form.price}
                 onChange={(e) => update('price', e.target.value)}
                 placeholder="25"
-                className={inputClass}
-                required
+                className={`${inputClass} ${errors.price ? inputErr : inputOk}`}
               />
             </Field>
-            <Field label="Total Capacity">
+            <Field id="field-totalTickets" label="Total Capacity" error={errors.totalTickets}>
               <input
                 type="number"
                 min="1"
                 value={form.totalTickets}
                 onChange={(e) => update('totalTickets', e.target.value)}
                 placeholder="30"
-                className={inputClass}
-                required
+                className={`${inputClass} ${errors.totalTickets ? inputErr : inputOk}`}
               />
             </Field>
           </div>

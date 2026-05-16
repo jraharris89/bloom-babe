@@ -32,5 +32,3 @@ export default async function handler(req) {
     })
   }
 }
-
-export const config = { path: '/.netlify/functions/events' }
