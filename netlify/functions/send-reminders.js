@@ -110,7 +110,7 @@ export default async function handler() {
 
     try {
       await resend.emails.send({
-        from: process.env.RESEND_FROM_EMAIL || 'Bloom Babe <noreply@bloombabe.com>',
+        from: process.env.RESEND_FROM_EMAIL || 'Bloom Babe <noreply@bloombabeevents.com>',
         to: emails,
         subject: `Reminder: ${event.name} is today!`,
         html,

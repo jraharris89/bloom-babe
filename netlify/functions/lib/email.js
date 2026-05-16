@@ -124,7 +124,7 @@ export async function sendConfirmationEmail({ event, buyer, attendees, totalAmou
 </html>`
 
   await resend.emails.send({
-    from: process.env.RESEND_FROM_EMAIL || 'Bloom Babe <noreply@bloombabe.com>',
+    from: process.env.RESEND_FROM_EMAIL || 'Bloom Babe <noreply@bloombabeevents.com>',
     to: uniqueRecipients,
     subject: `Your tickets for ${event.name} — Bloom Babe`,
     html,
