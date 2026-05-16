@@ -135,6 +135,22 @@ export async function adminDeletePromoCode(token, code) {
   return res.json()
 }
 
+export async function adminUploadImage(token, { dataUrl, contentType }) {
+  const res = await fetch(`${API_BASE}/.netlify/functions/admin-upload`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${token}`,
+    },
+    body: JSON.stringify({ dataUrl, contentType }),
+  })
+  if (!res.ok) {
+    const err = await res.json().catch(() => ({}))
+    throw new Error(err.error || 'Upload failed')
+  }
+  return res.json()
+}
+
 export async function adminFetchAttendees(token, eventId) {
   const res = await fetch(`${API_BASE}/.netlify/functions/admin-events?action=attendees&eventId=${eventId}`, {
     headers: { Authorization: `Bearer ${token}` },

@@ -292,6 +292,16 @@ export function DownloadIcon({ className = '' }) {
   )
 }
 
+export function UploadIcon({ className = '' }) {
+  return (
+    <svg viewBox="0 0 24 24" className={className} fill="none" stroke="currentColor" strokeWidth="1.5" xmlns="http://www.w3.org/2000/svg">
+      <path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4" strokeLinecap="round" strokeLinejoin="round" />
+      <path d="M17 8l-5-5-5 5" strokeLinecap="round" strokeLinejoin="round" />
+      <path d="M12 3v12" strokeLinecap="round" strokeLinejoin="round" />
+    </svg>
+  )
+}
+
 export function FloralCorner({ className = '' }) {
   return (
     <svg viewBox="0 0 80 80" className={className} fill="none" stroke="currentColor" strokeWidth="0.6" opacity="0.3" xmlns="http://www.w3.org/2000/svg">

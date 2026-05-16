@@ -240,6 +240,7 @@ export default function AdminDashboard({ token, onLogout }) {
       {showForm && (
         <EventForm
           event={editingEvent}
+          token={token}
           onSave={handleSave}
           onCancel={() => { setShowForm(false); setEditingEvent(null) }}
           saving={saving}

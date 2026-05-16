@@ -1,7 +1,8 @@
 import { useState, useEffect, useRef, useCallback } from 'react'
-import { CloseIcon } from '../Icons'
+import { CloseIcon, UploadIcon } from '../Icons'
 import { EVENT_TYPES } from '../../lib/eventTypes'
 import { normalizeImageUrl } from '../../lib/imageUrl'
+import { adminUploadImage } from '../../lib/api'
 
 const defaultForm = {
   name: '',
@@ -158,12 +159,13 @@ function FocalPointPicker({ src, position, onChange, onError }) {
   )
 }
 
-export default function EventForm({ event, onSave, onCancel, saving }) {
+export default function EventForm({ event, token, onSave, onCancel, saving }) {
   const [form, setForm] = useState(defaultForm)
 
   useEffect(() => {
     setErrors({})
     setImageError(false)
+    setUploadError(null)
     if (event) {
       const d = new Date(event.date)
       setForm({
@@ -188,6 +190,39 @@ export default function EventForm({ event, onSave, onCancel, saving }) {
 
   const [errors, setErrors] = useState({})
   const [imageError, setImageError] = useState(false)
+  const [uploading, setUploading] = useState(false)
+  const [uploadError, setUploadError] = useState(null)
+  const [dragActive, setDragActive] = useState(false)
+  const fileInputRef = useRef(null)
+
+  const handleFile = useCallback(async (file) => {
+    if (!file) return
+    if (!file.type.startsWith('image/')) {
+      setUploadError('Please choose an image file (JPEG, PNG, WebP, or GIF)')
+      return
+    }
+    if (file.size > 4 * 1024 * 1024) {
+      setUploadError('Image must be under 4 MB')
+      return
+    }
+    setUploading(true)
+    setUploadError(null)
+    try {
+      const dataUrl = await new Promise((resolve, reject) => {
+        const reader = new FileReader()
+        reader.onload = (e) => resolve(e.target.result)
+        reader.onerror = reject
+        reader.readAsDataURL(file)
+      })
+      const { url } = await adminUploadImage(token, { dataUrl, contentType: file.type })
+      update('image', url)
+      setImageError(false)
+    } catch (err) {
+      setUploadError(err.message || 'Upload failed — please try again')
+    } finally {
+      setUploading(false)
+    }
+  }, [token])
 
   const update = (field, value) => {
     setForm((f) => ({ ...f, [field]: value }))
@@ -381,6 +416,50 @@ export default function EventForm({ event, onSave, onCancel, saving }) {
               className={`${inputClass} ${imageError ? inputErr : inputOk}`}
             />
           </Field>
+
+          <div className="flex items-center gap-3 my-1">
+            <div className="flex-1 h-px bg-gold/10" />
+            <span className="text-xs text-charcoal-light/50">or upload from your computer</span>
+            <div className="flex-1 h-px bg-gold/10" />
+          </div>
+
+          <div
+            className={`relative flex flex-col items-center justify-center gap-2 rounded-xl border-2 border-dashed px-6 py-8 cursor-pointer transition-colors ${
+              dragActive
+                ? 'border-gold/60 bg-gold/5'
+                : 'border-gold/20 hover:border-gold/40 hover:bg-cream/30'
+            } ${uploading ? 'pointer-events-none opacity-60' : ''}`}
+            onDragOver={(e) => { e.preventDefault(); setDragActive(true) }}
+            onDragLeave={() => setDragActive(false)}
+            onDrop={(e) => {
+              e.preventDefault()
+              setDragActive(false)
+              handleFile(e.dataTransfer.files[0])
+            }}
+            onClick={() => fileInputRef.current?.click()}
+          >
+            <input
+              ref={fileInputRef}
+              type="file"
+              accept="image/jpeg,image/png,image/webp,image/gif"
+              className="hidden"
+              onChange={(e) => handleFile(e.target.files[0])}
+            />
+            <UploadIcon className={`w-7 h-7 ${dragActive ? 'text-gold' : 'text-charcoal-light/40'}`} />
+            {uploading ? (
+              <p className="text-sm text-charcoal-light">Uploading…</p>
+            ) : (
+              <>
+                <p className="text-sm text-charcoal-light">
+                  Drop an image here, or <span className="text-gold font-medium">browse</span>
+                </p>
+                <p className="text-xs text-charcoal-light/50">JPEG, PNG, WebP, GIF — max 4 MB</p>
+              </>
+            )}
+          </div>
+          {uploadError && (
+            <p className="text-xs text-rose-500">{uploadError}</p>
+          )}
           {form.image && !imageError && (
             <FocalPointPicker
               src={normalizeImageUrl(form.image)}
