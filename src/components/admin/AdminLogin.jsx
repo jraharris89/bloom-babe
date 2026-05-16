@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { LockIcon, FlowerIcon } from '../Icons'
+import { LockIcon } from '../Icons'
 
 export default function AdminLogin({ onLogin }) {
   const [password, setPassword] = useState('')

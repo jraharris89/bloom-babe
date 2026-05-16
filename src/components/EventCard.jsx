@@ -38,6 +38,7 @@ export default function EventCard({ event }) {
             loading="lazy"
             decoding="async"
             className="w-full h-full object-cover"
+            style={event.imagePosition ? { objectPosition: `${event.imagePosition.x}% ${event.imagePosition.y}%` } : undefined}
           />
         ) : (
           <div className="w-full h-full flex items-center justify-center">

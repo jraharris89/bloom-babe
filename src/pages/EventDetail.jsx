@@ -8,52 +8,10 @@ import TicketForm from '../components/TicketForm'
 import { getEventType } from '../lib/eventTypes'
 import { fetchEvent } from '../lib/api'
 
-// Demo event for development
-const DEMO_EVENTS = {
-  'demo-1': {
-    id: 'demo-1',
-    name: 'Plant Bingo',
-    type: 'plant-games',
-    image: '/Floral_Arrangement.jpg',
-    date: new Date('2026-06-27T19:00:00').toISOString(),
-    location: 'Iconic Venue, Boise',
-    price: 25,
-    totalTickets: 30,
-    soldTickets: 0,
-    ageRequirement: 21,
-    description: 'It\'s bingo — but make it botanical. Win plants and prizes while sipping your favorite drink.\n\nThis is our very first Bloom Babe event and we are SO excited to kick things off with a night of plant bingo! Play for a chance to win beautiful plants, hang with great people, and laugh a lot.\n\nWhat\'s included:\n- Bingo cards + daubers\n- Plant and prize giveaways\n- Good vibes all night\n\n21+ event. Please verify your age at the door. Must be 21 or older to attend.',
-  },
-  'demo-2': {
-    id: 'demo-2',
-    name: 'Paint & Sip: Botanical Edition',
-    type: 'paint-night',
-    image: '/Paint_Night.jpg',
-    date: new Date(Date.now() + 14 * 24 * 60 * 60 * 1000).toISOString(),
-    location: 'Bloom Studio',
-    price: 45,
-    totalTickets: 24,
-    soldTickets: 8,
-    description: 'Grab a brush and your favorite drink — we\'re painting botanicals! No experience needed. Our instructor will walk you through every step as you create your own botanical masterpiece on canvas.\n\nWhat\'s included:\n- All painting supplies\n- Canvas to take home\n- Light snacks\n- BYOB friendly',
-  },
-  'demo-3': {
-    id: 'demo-3',
-    name: 'Terrarium Building Night',
-    type: 'terrarium',
-    image: '/Terrarium.jpg',
-    date: new Date(Date.now() + 21 * 24 * 60 * 60 * 1000).toISOString(),
-    location: 'The Garden Room, Downtown',
-    price: 55,
-    totalTickets: 16,
-    soldTickets: 15,
-    description: 'Build your own living terrarium to take home. We supply the glass vessels, soil, moss, and mini plants.\n\nLearn about different plant ecosystems and create a self-sustaining mini garden that will thrive on your desk or windowsill.\n\nWhat\'s included:\n- Glass vessel\n- Soil, rocks, and moss\n- Mini plants\n- Care instructions',
-  },
-}
-
 export default function EventDetail() {
   const { id } = useParams()
   const [event, setEvent] = useState(null)
   const [loading, setLoading] = useState(true)
-  const isDev = import.meta.env.DEV
 
   useEffect(() => {
     let cancelled = false
@@ -63,12 +21,10 @@ export default function EventDetail() {
       .catch((err) => {
         if (cancelled) return
         console.error('[EventDetail] failed to load event:', err)
-        // Only fall back to demo data in development.
-        if (isDev && DEMO_EVENTS[id]) setEvent(DEMO_EVENTS[id])
       })
       .finally(() => { if (!cancelled) setLoading(false) })
     return () => { cancelled = true }
-  }, [id, isDev])
+  }, [id])
 
   if (loading) {
     return (
@@ -127,6 +83,7 @@ export default function EventDetail() {
                   alt={event.name}
                   decoding="async"
                   className="w-full h-full object-cover"
+                  style={event.imagePosition ? { objectPosition: `${event.imagePosition.x}% ${event.imagePosition.y}%` } : undefined}
                 />
               ) : (
                 <div className="w-full h-full flex items-center justify-center">

@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom'
-import { InstagramIcon, FacebookIcon, EmailIcon, FlowerIcon, FloralDivider } from './Icons'
+import { InstagramIcon, FacebookIcon, EmailIcon, FloralDivider } from './Icons'
 import { FooterBotanicals } from './BotanicalBackgrounds'
 
 export default function Footer() {

@@ -12,40 +12,6 @@ import StatusBadge, { getTicketStatus } from '../components/StatusBadge'
 import { getEventType } from '../lib/eventTypes'
 import { fetchEvents } from '../lib/api'
 
-const DEMO_EVENTS = [
-  {
-    id: 'demo-1',
-    name: 'Plant Bingo',
-    type: 'plant-games',
-    date: new Date('2026-06-27T19:00:00').toISOString(),
-    location: 'Iconic Venue, Boise',
-    price: 25,
-    totalTickets: 30,
-    soldTickets: 0,
-    ageRequirement: 21,
-  },
-  {
-    id: 'demo-2',
-    name: 'Paint & Sip: Botanical Edition',
-    type: 'paint-night',
-    date: new Date(Date.now() + 14 * 86400000).toISOString(),
-    location: 'Bloom Studio',
-    price: 45,
-    totalTickets: 24,
-    soldTickets: 8,
-  },
-  {
-    id: 'demo-3',
-    name: 'Terrarium Building Night',
-    type: 'terrarium',
-    date: new Date(Date.now() + 21 * 86400000).toISOString(),
-    location: 'The Garden Room, Downtown',
-    price: 55,
-    totalTickets: 16,
-    soldTickets: 15,
-  },
-]
-
 const MONTHS = [
   'January', 'February', 'March', 'April', 'May', 'June',
   'July', 'August', 'September', 'October', 'November', 'December',
@@ -71,11 +37,11 @@ export default function CalendarPage() {
 
   const [viewYear, setViewYear] = useState(today.getFullYear())
   const [viewMonth, setViewMonth] = useState(today.getMonth())
-  const [events, setEvents] = useState(DEMO_EVENTS)
+  const [events, setEvents] = useState([])
 
   useEffect(() => {
     fetchEvents()
-      .then((data) => { if (data?.length > 0) setEvents(data) })
+      .then((data) => { if (Array.isArray(data)) setEvents(data) })
       .catch(() => {})
   }, [])
 

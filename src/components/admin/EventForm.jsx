@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef, useCallback } from 'react'
 import { CloseIcon } from '../Icons'
 import { EVENT_TYPES } from '../../lib/eventTypes'
 import { normalizeImageUrl } from '../../lib/imageUrl'
@@ -14,6 +14,7 @@ const defaultForm = {
   totalTickets: '',
   ageRequirement: false,
   image: '',
+  imagePosition: { x: 50, y: 50 },
   draft: false,
   cancelled: false,
 }
@@ -78,6 +79,84 @@ function Field({ id, label, hint, error, children }) {
   )
 }
 
+function FocalPointPicker({ src, position, onChange }) {
+  const containerRef = useRef(null)
+  const dragging = useRef(false)
+
+  const updatePosition = useCallback((e) => {
+    const rect = containerRef.current.getBoundingClientRect()
+    const clientX = e.touches ? e.touches[0].clientX : e.clientX
+    const clientY = e.touches ? e.touches[0].clientY : e.clientY
+    const x = Math.min(100, Math.max(0, ((clientX - rect.left) / rect.width) * 100))
+    const y = Math.min(100, Math.max(0, ((clientY - rect.top) / rect.height) * 100))
+    onChange({ x: Math.round(x), y: Math.round(y) })
+  }, [onChange])
+
+  const onPointerDown = useCallback((e) => {
+    e.preventDefault()
+    dragging.current = true
+    updatePosition(e)
+  }, [updatePosition])
+
+  const onPointerMove = useCallback((e) => {
+    if (!dragging.current) return
+    e.preventDefault()
+    updatePosition(e)
+  }, [updatePosition])
+
+  const onPointerUp = useCallback(() => {
+    dragging.current = false
+  }, [])
+
+  useEffect(() => {
+    const el = containerRef.current
+    if (!el) return
+    el.addEventListener('touchmove', onPointerMove, { passive: false })
+    return () => el.removeEventListener('touchmove', onPointerMove)
+  }, [onPointerMove])
+
+  return (
+    <div className="space-y-2">
+      <div
+        ref={containerRef}
+        className="relative w-full h-44 rounded-xl border border-gold/10 overflow-hidden cursor-crosshair select-none"
+        onMouseDown={onPointerDown}
+        onMouseMove={onPointerMove}
+        onMouseUp={onPointerUp}
+        onMouseLeave={onPointerUp}
+        onTouchStart={onPointerDown}
+        onTouchEnd={onPointerUp}
+      >
+        <img
+          src={src}
+          alt="Preview"
+          className="w-full h-full object-cover pointer-events-none"
+          style={{ objectPosition: `${position.x}% ${position.y}%` }}
+          draggable={false}
+        />
+        <div
+          className="absolute w-6 h-6 -translate-x-1/2 -translate-y-1/2 pointer-events-none"
+          style={{ left: `${position.x}%`, top: `${position.y}%` }}
+        >
+          <div className="absolute inset-0 rounded-full border-2 border-white shadow-lg" />
+          <div className="absolute inset-[5px] rounded-full bg-gold" />
+        </div>
+        <div className="absolute inset-0 pointer-events-none"
+          style={{
+            background: `
+              linear-gradient(to right, transparent calc(${position.x}% - 0.5px), rgba(255,255,255,0.4) calc(${position.x}% - 0.5px), rgba(255,255,255,0.4) calc(${position.x}% + 0.5px), transparent calc(${position.x}% + 0.5px)),
+              linear-gradient(to bottom, transparent calc(${position.y}% - 0.5px), rgba(255,255,255,0.4) calc(${position.y}% - 0.5px), rgba(255,255,255,0.4) calc(${position.y}% + 0.5px), transparent calc(${position.y}% + 0.5px))
+            `
+          }}
+        />
+      </div>
+      <p className="text-xs text-charcoal-light/60 text-center">
+        Drag to set the focal point — this is what stays visible when the image is cropped
+      </p>
+    </div>
+  )
+}
+
 export default function EventForm({ event, onSave, onCancel, saving }) {
   const [form, setForm] = useState(defaultForm)
 
@@ -96,6 +175,7 @@ export default function EventForm({ event, onSave, onCancel, saving }) {
         totalTickets: event.totalTickets?.toString() || '',
         ageRequirement: !!event.ageRequirement,
         image: event.image || '',
+        imagePosition: event.imagePosition ?? { x: 50, y: 50 },
         draft: event.draft ?? false,
         cancelled: event.cancelled ?? false,
       })
@@ -144,6 +224,7 @@ export default function EventForm({ event, onSave, onCancel, saving }) {
       totalTickets: parseInt(form.totalTickets, 10),
       ageRequirement: form.ageRequirement ? 21 : null,
       image: form.image.trim() || null,
+      imagePosition: form.imagePosition,
       draft: form.draft,
       cancelled: form.cancelled,
     })
@@ -297,11 +378,10 @@ export default function EventForm({ event, onSave, onCancel, saving }) {
             />
           </Field>
           {form.image && (
-            <img
+            <FocalPointPicker
               src={normalizeImageUrl(form.image)}
-              alt="Preview"
-              className="w-full h-44 object-cover rounded-xl border border-gold/10"
-              onError={(e) => { e.currentTarget.style.display = 'none' }}
+              position={form.imagePosition}
+              onChange={(pos) => update('imagePosition', pos)}
             />
           )}
 

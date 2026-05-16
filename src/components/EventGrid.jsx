@@ -4,49 +4,8 @@ import { FlowerIcon } from './Icons'
 import { EventsBotanicals } from './BotanicalBackgrounds'
 import { fetchEvents } from '../lib/api'
 
-// Demo events for development / when no backend is connected
-const DEMO_EVENTS = [
-  {
-    id: 'demo-1',
-    name: 'Plant Bingo',
-    type: 'plant-games',
-    image: '/Floral_Arrangement.jpg',
-    date: new Date('2026-06-27T19:00:00').toISOString(),
-    location: 'Iconic Venue, Boise',
-    price: 25,
-    totalTickets: 30,
-    soldTickets: 0,
-    description: 'It\'s bingo — but make it botanical. Win plants and prizes while sipping your favorite drink. 21+ event.',
-  },
-  {
-    id: 'demo-2',
-    name: 'Paint & Sip: Botanical Edition',
-    type: 'paint-night',
-    image: '/Paint_Night.jpg',
-    date: new Date(Date.now() + 14 * 24 * 60 * 60 * 1000).toISOString(),
-    location: 'Bloom Studio',
-    price: 45,
-    totalTickets: 24,
-    soldTickets: 8,
-    description: 'Grab a brush and your favorite drink — we\'re painting botanicals! No experience needed.',
-  },
-  {
-    id: 'demo-3',
-    name: 'Terrarium Building Night',
-    type: 'terrarium',
-    image: '/Terrarium.jpg',
-    date: new Date(Date.now() + 21 * 24 * 60 * 60 * 1000).toISOString(),
-    location: 'The Garden Room, Downtown',
-    price: 55,
-    totalTickets: 16,
-    soldTickets: 15,
-    description: 'Build your own living terrarium to take home. We supply the glass vessels, soil, moss, and mini plants.',
-  },
-]
-
 export default function EventGrid({ limit, showHeader = true }) {
-  const isDev = import.meta.env.DEV
-  const [events, setEvents] = useState(isDev ? DEMO_EVENTS : [])
+  const [events, setEvents] = useState([])
   const [loading, setLoading] = useState(true)
   const [fetchFailed, setFetchFailed] = useState(false)
 
@@ -63,12 +22,10 @@ export default function EventGrid({ limit, showHeader = true }) {
         if (cancelled) return
         console.error('[EventGrid] failed to load events:', err)
         setFetchFailed(true)
-        // In dev, fall back to demo events so the UI still renders.
-        if (isDev) setEvents(DEMO_EVENTS)
       })
       .finally(() => { if (!cancelled) setLoading(false) })
     return () => { cancelled = true }
-  }, [isDev])
+  }, [])
 
   const displayEvents = limit ? events.slice(0, limit) : events
 
