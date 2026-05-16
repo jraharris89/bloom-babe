@@ -79,7 +79,7 @@ function Field({ id, label, hint, error, children }) {
   )
 }
 
-function FocalPointPicker({ src, position, onChange }) {
+function FocalPointPicker({ src, position, onChange, onError }) {
   const containerRef = useRef(null)
   const dragging = useRef(false)
 
@@ -133,6 +133,7 @@ function FocalPointPicker({ src, position, onChange }) {
           className="w-full h-full object-cover pointer-events-none"
           style={{ objectPosition: `${position.x}% ${position.y}%` }}
           draggable={false}
+          onError={onError}
         />
         <div
           className="absolute w-6 h-6 -translate-x-1/2 -translate-y-1/2 pointer-events-none"
@@ -162,6 +163,7 @@ export default function EventForm({ event, onSave, onCancel, saving }) {
 
   useEffect(() => {
     setErrors({})
+    setImageError(false)
     if (event) {
       const d = new Date(event.date)
       setForm({
@@ -185,10 +187,12 @@ export default function EventForm({ event, onSave, onCancel, saving }) {
   }, [event])
 
   const [errors, setErrors] = useState({})
+  const [imageError, setImageError] = useState(false)
 
   const update = (field, value) => {
     setForm((f) => ({ ...f, [field]: value }))
     if (errors[field]) setErrors((e) => ({ ...e, [field]: null }))
+    if (field === 'image') setImageError(false)
   }
 
   const validate = () => {
@@ -367,22 +371,33 @@ export default function EventForm({ event, onSave, onCancel, saving }) {
 
           <Field
             label="Image URL"
-            hint="Paste a link to your event photo. Google Drive share links, Dropbox links, and direct image URLs all work — we'll handle the conversion automatically."
+            hint="Paste a Google Drive share link, Dropbox link, or any direct image URL. Make sure Google Drive files are shared as 'Anyone with the link'."
           >
             <input
               type="text"
               value={form.image}
               onChange={(e) => update('image', e.target.value)}
               placeholder="https://..."
-              className={inputClass}
+              className={`${inputClass} ${imageError ? inputErr : inputOk}`}
             />
           </Field>
-          {form.image && (
+          {form.image && !imageError && (
             <FocalPointPicker
               src={normalizeImageUrl(form.image)}
               position={form.imagePosition}
               onChange={(pos) => update('imagePosition', pos)}
+              onError={() => setImageError(true)}
             />
+          )}
+          {form.image && imageError && (
+            <div className="rounded-xl border border-rose-200 bg-rose-50/50 p-4 text-sm text-rose-600 space-y-1">
+              <p className="font-medium">Image couldn't be loaded</p>
+              <ul className="text-xs text-rose-500 list-disc list-inside space-y-0.5">
+                <li>For Google Drive: open sharing settings and set to "Anyone with the link can view"</li>
+                <li>For other URLs: make sure it's a direct link to an image file (.jpg, .png, .webp)</li>
+                <li>Some sites block images from being embedded — try uploading to Google Drive instead</li>
+              </ul>
+            </div>
           )}
 
           {/* ── Visibility & Status ── */}
